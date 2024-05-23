@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "SubstrateScraper", "SubstrateScraper.pyproj", "{3F9B5603-0436-45FD-9B7E-404EF63F8483}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ShardMind", "ShardMind.pyproj", "{3F9B5603-0436-45FD-9B7E-404EF63F8483}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

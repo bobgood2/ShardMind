@@ -1,4 +1,7 @@
-# SubstrateScraper
+# ShardMind
+Scraper, Indexer, search engine, query planner, chat bot, LLM
+
+
 Download data for personal indexing
 
 Install steps.

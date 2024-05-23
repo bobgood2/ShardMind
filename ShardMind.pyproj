@@ -22,7 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="chatbox.py" />
+    <Compile Include="chatbot.py" />
     <Compile Include="gen_admin.py" />
     <Compile Include="auth.py" />
     <Compile Include="SubstrateScraper.py" />
