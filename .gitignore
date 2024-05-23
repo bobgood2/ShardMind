@@ -161,3 +161,9 @@ cython_debug/
 /.vs/SubstrateScraper/FileContentIndex
 /.vs/SubstrateScraper/v17
 /.vs/ShardMind
+/#
+/.chainlit
+/a
+/Create
+/environment
+/new
