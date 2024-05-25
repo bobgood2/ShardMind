@@ -4,14 +4,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>llmClient.py</StartupFile>
+    <StartupFile>create_index.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>SubstrateScarper</Name>
     <RootNamespace>SubstrateScarper</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>Global|VisualStudio|ShardMind</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterArguments>
     </InterpreterArguments>
@@ -28,11 +28,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="build.py" />
+    <Compile Include="create_index.py" />
     <Compile Include="llmClient.py" />
-    <Compile Include="run_chainlit.py" />
     <Compile Include="chatbot.py" />
-    <Compile Include="gen_admin.py" />
-    <Compile Include="auth.py" />
     <Compile Include="SubstrateScraper.py" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +46,8 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="access_token.txt" />
+    <Content Include="get_token.ps1" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>

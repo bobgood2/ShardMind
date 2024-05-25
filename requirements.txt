@@ -12,6 +12,7 @@ click==8.1.7
 colorama==0.4.6
 dataclasses-json==0.5.14
 Deprecated==1.2.14
+faiss-cpu==1.8.0
 fastapi==0.110.3
 fastapi-socketio==0.0.10
 filetype==1.2.0

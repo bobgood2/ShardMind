@@ -4,6 +4,7 @@ import json
 import os
 import atexit
 import requests
+import uuid
 
 class LLMClient:
 
@@ -24,7 +25,7 @@ class LLMClient:
             LLMClient._ENDPOINT = endpoint
         LLMClient._ENDPOINT += self._API
 
-    def send_request(self, model_name, request):
+    def send_request(self, model_name, request, request_id):
         # get the token
         token = self._get_token()
 
@@ -32,7 +33,9 @@ class LLMClient:
         headers = {
             'Content-Type':'application/json', 
             'Authorization': 'Bearer ' + token, 
-            'X-ModelType': model_name }
+            'X-ModelType': model_name,
+            'X-ScenarioGUID': 'b7af0c40-e8f4-46a4-9de3-23ae907357b0',
+            'X-CV': request_id}
 
         body = str.encode(json.dumps(request))
         response = requests.post(LLMClient._ENDPOINT, data=body, headers=headers)
@@ -147,16 +150,19 @@ def get_current_weather(location, unit="fahrenheit"):
     else:
         return json.dumps({"location": location, "temperature": "unknown"})
 
-response = llm_client.send_request('dev-gpt-4-turbo-chat-completions', request_data)
+rid = guid = str(uuid.uuid4())
+model = 'dev-gpt-4o-2024-05-13-chat-completions'
+omodel = 'dev-gpt-4-turbo-chat-completions'
+response = llm_client.send_request(model, request_data, rid)
 print(response)
 
-response = llm_client.send_request('dev-gpt-4-turbo-chat-completions', request_data_json_mode)
+response = llm_client.send_request(model, request_data_json_mode, rid)
 print(response)
 
-response = llm_client.send_request('dev-gpt-4-turbo-chat-completions', request_data_reproducible_output)
+response = llm_client.send_request(model, request_data_reproducible_output, rid)
 print(response)
 
-response = llm_client.send_request('dev-gpt-4-turbo-chat-completions', request_data_parallel_function_calling)
+response = llm_client.send_request(model, request_data_parallel_function_calling, rid)
 print(response)
 
 
