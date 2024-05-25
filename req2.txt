@@ -1,6 +1,7 @@
 aiofiles==23.2.1
 annotated-types==0.7.0
 anyio==3.7.1
+ast_transform @ git+https://github.com/goodw21985/ApiConductor.git@387e15a51a5358a6be0599f56ee52e1c90b5aa43#subdirectory=AstTransformation
 asyncer==0.0.2
 bidict==0.23.1
 black==24.4.2
@@ -24,7 +25,6 @@ Flask==3.0.3
 Flask-SocketIO==5.3.6
 fsspec==2024.5.0
 gevent==24.2.1
-gevent-websocket-0.10.1
 googleapis-common-protos==1.63.0
 greenlet==3.0.3
 grpcio==1.64.0
@@ -104,4 +104,3 @@ wsproto==1.2.0
 zipp==3.18.2
 zope.event==5.0
 zope.interface==6.4.post1
-git+https://github.com/goodw21985/ApiConductor.git@master#egg=ast_transform&subdirectory=AstTransformation

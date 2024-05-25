@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Log Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { font-size: 24px; }
+    </style>
+</head>
+<body>
+    <h1>Logs</h1>
+    <div id="jstree"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+            const treeData = [];
+
+            $('#jstree').jstree({
+                'core': {
+                    'data': treeData
+                }
+            });
+
+            socket.on('initial_logs', function(data) {
+                data.forEach(logEntry => {
+                    $('#jstree').jstree(true).create_node('#', logEntry, 'last');
+                });
+            });
+
+            socket.on('new_log', function(data) {
+                $('#jstree').jstree(true).create_node('#', data, 'last');
+            });
+        });
+    </script>
+</body>
+</html>
