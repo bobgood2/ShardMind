@@ -1,12 +1,19 @@
 import os
 import numpy as np
 import faiss
+import json
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
 # Path to the saved FAISS index
 index_file_path = r'C:\download\email_index'
+mapping_file_path = r'c:\download\email_index_mappings'
+
+# Load the mapping
+with open(mapping_file_path, 'r') as f:
+    filenames = json.load(f)
+
 
 # Load the FAISS index
 index = faiss.read_index(index_file_path)
@@ -31,7 +38,7 @@ def search():
         distances, indices = index.search(query_embedding, k)
         
         # Prepare the response
-        results = [{'index': int(idx), 'distance': float(dist)} for idx, dist in zip(indices[0], distances[0])]
+        results = [{'index': int(idx), 'fn': filenames[int(idx)], 'distance': float(dist)} for idx, dist in zip(indices[0], distances[0])]
         return jsonify({'results': results})
     
     except Exception as e:

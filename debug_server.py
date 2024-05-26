@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
-import webbrowser
-from threading import Timer
+import json
+import threading
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -14,19 +14,22 @@ def index():
 
 @app.route('/log', methods=['POST'])
 def log():
-    message = request.json.get('message')
-    log_entry = {"id": len(log_data) + 1, "parent": "#", "text": message}
-    log_data.append(log_entry)
-    socketio.emit('new_log', log_entry, broadcast=True)
-    return '', 204
+    try:
+        print("got log")
+        message = request.json.get('message')
+        print(message)
+        log_entry = {"id": str(len(log_data) + 1), "parent": "#", "text": str(message)}  # Ensure id is a string and text is a string
+        log_data.append(log_entry)
+        socketio.emit('new_log', log_data)
+        print(f"emitted {log_data}")
+        return '', 204
+    except Exception as e:
+        print(f"exception {e}")
+        return jsonify({"error": str(e)}), 500  # Ensure that a response is returned in case of an exception
 
 @socketio.on('connect')
 def handle_connect():
     emit('initial_logs', log_data)
 
-def open_browser():
-    webbrowser.open_new('http://localhost:8080/')
-
 if __name__ == '__main__':
-    Timer(1, open_browser).start()  # Open the browser after a dela
     socketio.run(app, debug=True, port=8080)

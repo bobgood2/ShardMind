@@ -1,41 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Log Viewer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { font-size: 24px; }
-    </style>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+	<title>Event Log</title>
 </head>
 <body>
-    <h1>Logs</h1>
-    <div id="jstree"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-            const treeData = [];
+	<div class="container" style="padding:10px 10px;">
+		<h1>Simple jQuery Jstree Example Using JSON</h1>
+		<div class="well" id="treeview_json"></div>
+	</div>
+	<script type="text/javascript">
+		var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-            $('#jstree').jstree({
-                'core': {
-                    'data': treeData
-                }
-            });
+		function initializeTree(data) {
+			$('#treeview_json').jstree(true).settings.core.data = data;
+			$('#treeview_json').jstree(true).refresh();
+		}
 
-            socket.on('initial_logs', function(data) {
-                data.forEach(logEntry => {
-                    $('#jstree').jstree(true).create_node('#', logEntry, 'last');
-                });
-            });
+		socket.on('initial_logs', function (data) {
+			initializeTree(data);
+		});
 
-            socket.on('new_log', function(data) {
-                $('#jstree').jstree(true).create_node('#', data, 'last');
-            });
-        });
-    </script>
+		socket.on('new_log', function (data) {
+			initializeTree(data);
+		});
+
+		$(document).ready(function () {
+			$('#treeview_json').jstree({
+				'core': {
+					'data': []
+				}
+			});
+		});
+	</script>
 </body>
 </html>
