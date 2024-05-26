@@ -3,12 +3,14 @@ import numpy as np
 import faiss
 import json
 from flask import Flask, request, jsonify
+from sentence_transformers import SentenceTransformer
 
 app = Flask(__name__)
 
 # Path to the saved FAISS index
 index_file_path = r'C:\download\email_index'
 mapping_file_path = r'c:\download\email_index_mappings'
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Load the mapping
 with open(mapping_file_path, 'r') as f:
@@ -19,13 +21,18 @@ with open(mapping_file_path, 'r') as f:
 index = faiss.read_index(index_file_path)
 
 # Define the dimension of embeddings (should match your embeddings' dimension)
-embedding_dim = 128
+embedding_dim = 384
+
 
 @app.route('/search', methods=['POST'])
 def search():
     try:
-        # Get the query embedding from the request
-        query_embedding = np.array(request.json['embedding'], dtype='float32').reshape(1, -1)
+        data = request.json
+        
+        # Get the query string from the JSON data
+        query_text = data.get('text', '')        
+        # Generate the embedding for the query string
+        query_embedding = model.encode([query_text], convert_to_tensor=True).cpu().numpy().reshape(1, -1)
         
         # Check if the query embedding has the correct dimension
         if query_embedding.shape[1] != embedding_dim:

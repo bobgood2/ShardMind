@@ -1,11 +1,13 @@
 import requests
 import json
 import sys
+import uuid
+guid = uuid.uuid4()
 
-def send_log_message(message):
+def send_log_message(guid, title, message):
     url = 'http://localhost:8080/log'
     headers = {'Content-Type': 'application/json'}
-    data = {'message': str(message)}
+    data = {'guid': str(guid), 'title':title, 'message': str(message)}
 
     try:
         response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -25,8 +27,7 @@ if len(sys.argv) > 1:
     query_text = sys.argv[1]
 else:
     query_text = input("Enter your query string: ")
-
-send_log_message(query_text)
+send_log_message(guid, 'query', query_text)
 
 
 # Request payload
@@ -46,5 +47,5 @@ response = requests.post(url, headers=headers, data=json.dumps(payload))
 # Print the response
 print(response.json())
 
-send_log_message(response.json())
+send_log_message(guid, 'response', response.json())
 

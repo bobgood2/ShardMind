@@ -11,14 +11,14 @@
 </head>
 <body>
 	<div class="container" style="padding:10px 10px;">
-		<h1>Simple jQuery Jstree Example Using JSON</h1>
+		<h1>Event Log</h1>
 		<div class="well" id="treeview_json"></div>
 	</div>
 	<script type="text/javascript">
 		var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 		function initializeTree(data) {
-			$('#treeview_json').jstree(true).settings.core.data = data;
+			$('#treeview_json').jstree(true).settings.core.data = JSON.parse(data);
 			$('#treeview_json').jstree(true).refresh();
 		}
 
@@ -29,7 +29,8 @@
 		socket.on('new_log', function (data) {
 			initializeTree(data);
 		});
-
+		False = false;
+		True = true;
 		$(document).ready(function () {
 			$('#treeview_json').jstree({
 				'core': {
