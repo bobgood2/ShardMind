@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>build.py</StartupFile>
+    <StartupFile>create_posting_lists.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -30,6 +30,7 @@
   <ItemGroup>
     <Compile Include="build.py" />
     <Compile Include="create_index.py" />
+    <Compile Include="create_posting_lists.py" />
     <Compile Include="debug_server.py" />
     <Compile Include="getfolders.py" />
     <Compile Include="index_serve.py" />
