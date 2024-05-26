@@ -49,12 +49,17 @@ def save_next_link(checkpoint_file, next_link):
     with open(checkpoint_file, 'w') as f:
         f.write(next_link)
 
+wcnt=0
+last_t = None
 # Function to save an email to a file
 def save_email(email, directory):
+    global wcnt, last_t
     email_id = email['id']
     file_path = os.path.join(directory, f"{email_id}.json")
     with open(file_path, 'w') as f:
+        last_t = email["receivedDateTime"]
         json.dump(email, f, indent=4)
+        wcnt+=1
 
 # Function to get all emails incrementally
 def get_emails_incrementally(endpoint, headers, checkpoint_file, directory):
@@ -86,3 +91,5 @@ if not os.path.exists(email_directory):
 get_emails_incrementally(endpoint, headers, checkpoint_file, email_directory)
 
 print(f"Emails have been saved to the '{email_directory}' directory.")
+print(f"{wcnt} files written")
+print(f"{last_t} last time")

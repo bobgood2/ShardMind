@@ -2,7 +2,7 @@ import os
 import numpy as np
 import faiss
 import json
-import datetime
+from datetime import datetime
 
 def metadata_path(file_path):
     dirname = os.path.dirname(file_path)
@@ -16,11 +16,12 @@ def load_embeddings_from_directory(directory, expected_embedding_dim):
     filenames = []
     ages = []
     cnt=0
+    last_age=0
     for file_name in os.listdir(directory):
         if file_name.endswith('.npy'):
             cnt+=1
             if cnt%100==0:
-                print(cnt)
+                print(f"{cnt} {last_age} years")
             file_path = os.path.join(directory, file_name)
             embedding = np.load(file_path)
             if embedding.shape[0] != expected_embedding_dim:
@@ -33,9 +34,10 @@ def load_embeddings_from_directory(directory, expected_embedding_dim):
             except:
                 continue
             time_string = metadata["receivedDateTime"]
-            time_format = '%d/%m/%Y %H:%M:%S'
+            time_format = '%Y-%m-%dT%H:%M:%SZ'
             given_time = datetime.strptime(time_string, time_format)
             age = (datetime.now() - given_time).total_seconds()
+            last_age = age/3600/24/365
 
             embeddings_list.append(embedding)
             filenames.append(file_name)
