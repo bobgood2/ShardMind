@@ -65,7 +65,11 @@ def get_weighted_embedding(email, weights):
 
 def preprocess_emails_from_directory(directory):
     for (path, email) in read_json_files(directory):
-        yield (path, get_weighted_embedding(email, weights))
+        try:
+            emb=get_weighted_embedding(email, weights)
+            yield (path, emb )
+        except Exception as e:
+            print (f"error in {emb}")
 
 weights = {
     'subject': 3,
