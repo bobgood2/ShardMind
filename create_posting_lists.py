@@ -17,10 +17,13 @@ posting_lists = {}
 when_list = []
 
 def postWho(prefix, who, index):
-    token = (prefix, who[0], who[1])
-    if token not in posting_lists:
-        posting_lists[token]=set([])
-    posting_lists[token].add(index)
+    try:
+        token = (prefix, who[0], who[1])
+        if token not in posting_lists:
+            posting_lists[token]=set([])
+        posting_lists[token].add(index)
+    except Exception as e:
+        print(f"exception {e}")
 
 def postBool(prefix, val, index):
     if val:
@@ -58,7 +61,7 @@ for index in range(len(sorted_filenames)):
 
 posting_list_dir = 'C:\download\email_posting_lists'
 
-with open(os.path.join(posting_list_dir,"when.json"), 'w') as f:
+with open("C:\download\email_when.json", 'w') as f:
     json.dump(when_list, f)
 
 import re
@@ -68,7 +71,7 @@ def sanitize_filename(input_tuple, max_length=250):
     combined_string = "_".join(input_tuple)
     
     # Define a regular expression pattern to match illegal filename characters
-    illegal_chars_pattern = r'[<>:"/\\|?*()@\' ]'
+    illegal_chars_pattern = r'[<>:"/\\|?*()@\' \x00-\x1F]'
     
     # Replace illegal characters with an underscore
     sanitized_string = re.sub(illegal_chars_pattern, '_', combined_string)

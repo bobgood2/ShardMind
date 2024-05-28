@@ -1,6 +1,7 @@
 aiofiles==23.2.1
 annotated-types==0.7.0
 anyio==3.7.1
+ast_transform @ git+https://github.com/goodw21985/ApiConductor.git@387e15a51a5358a6be0599f56ee52e1c90b5aa43#subdirectory=AstTransformation
 asyncer==0.0.2
 beautifulsoup4==4.12.3
 bidict==0.23.1
@@ -80,6 +81,7 @@ python-dotenv==1.0.1
 python-engineio==4.9.1
 python-multipart==0.0.9
 python-socketio==5.11.2
+PyTrie==0.4.0
 PyYAML==6.0.1
 regex==2024.5.15
 requests==2.32.2
@@ -90,6 +92,7 @@ sentence-transformers==2.7.0
 simple-websocket==1.0.0
 six==1.16.0
 sniffio==1.3.1
+sortedcontainers==2.4.0
 soupsieve==2.5
 starlette==0.37.2
 sympy==1.12
@@ -106,6 +109,7 @@ typing_extensions==4.11.0
 uptrace==1.24.0
 urllib3==2.2.1
 uvicorn==0.25.0
+waitress==3.0.0
 watchfiles==0.20.0
 websocket-client==1.8.0
 websockets==12.0
@@ -115,4 +119,3 @@ wsproto==1.2.0
 zipp==3.18.2
 zope.event==5.0
 zope.interface==6.4.post1
-git+https://github.com/goodw21985/ApiConductor.git@master#egg=ast_transform&subdirectory=AstTransformation

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>create_posting_lists.py</StartupFile>
+    <StartupFile>when_search.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -30,8 +30,10 @@
   <ItemGroup>
     <Compile Include="build.py" />
     <Compile Include="create_index.py" />
+    <Compile Include="create_people_index.py" />
     <Compile Include="create_posting_lists.py" />
     <Compile Include="debug_server.py" />
+    <Compile Include="freeze.py" />
     <Compile Include="getfolders.py" />
     <Compile Include="index_serve.py" />
     <Compile Include="llmClient.py" />
@@ -40,6 +42,8 @@
     <Compile Include="SubstrateScraper.py" />
     <Compile Include="test.py" />
     <Compile Include="test_index_serve.py" />
+    <Compile Include="when_search.py" />
+    <Compile Include="who_search.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

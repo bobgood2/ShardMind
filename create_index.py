@@ -77,7 +77,7 @@ index.add(sorted_embeddings)
 print("FAISS index created and embeddings added")
 
 # Path to save the FAISS index
-index_file_path = r'C:\download\email_index'
+index_file_path = r'C:\download\email_index.faiss'
 mapping_file_path = r'C:\download\email_index_mappings'
 
 # Save the index
