@@ -8,6 +8,11 @@ from sentence_transformers import SentenceTransformer
 import who_search
 import when_search
 import traceback
+from datetime import datetime
+
+def nowstamp():
+    now = datetime.now()
+    return now.strftime("%H:%M:%S.%f")[:-3]
 
 app = Flask(__name__)
 
@@ -125,14 +130,19 @@ def post_filter_search(query_embedding, union_set, take):
    
 @app.route('/search', methods=['POST'])
 def search():
+    print(f"start {nowstamp()}")
     try:
         query = request.json
         print(query)
+        print(f"who search {nowstamp()}")
         posting_lists_names, backup_text = who_search.request(query)
         posting_lists=[read_posting_list(item) for item in posting_lists_names]
         neg_posting_lists=[]
         
+        print(f"bool postings {nowstamp()}")
         add_bool_posting_lists(posting_lists, neg_posting_lists, query)
+        print(f"union set {nowstamp()}")
+
         union_set = set()
         for s in posting_lists:
             union_set.update(s)
@@ -140,6 +150,7 @@ def search():
         for s in neg_posting_lists:
             union_set.difference_update(s)
             
+        print(f"when search {nowstamp()}")
         #inclusive ranges
         first, last=when_search.request(query)
         
@@ -148,6 +159,8 @@ def search():
             union_set = {x for x in union_set if first <= x <= last}
         if not union_set and first<=last:
             union_set=set(range(first, last + 1))
+
+        print(f"query embedding {nowstamp()}")
 
         # Get the query string from the JSON data
         query_text = query.get('text', '')        
@@ -163,6 +176,7 @@ def search():
         # Number of nearest neighbors to search for
         take = int(request.json.get('take', 5))
         
+        print(f"search start {nowstamp()}")
         if (len(union_set)<k_group or max(union_set)<k_recent):
             # go through one by one and calculate
             print(f"small scenario: {len(union_set)}")
@@ -181,7 +195,7 @@ def search():
             distances = post_filter_search(query_embedding, union_set, take)
             pass
 
-        # Perform the search
+        print(f"prepare response {nowstamp()}")
         
         results = []
         # Prepare the response
@@ -190,10 +204,14 @@ def search():
             result= {'id': int(idx), 'email': raw_email, 'distance':float(dist)}
             results.append(result)
             
-        return jsonify(results)
+        r= jsonify(results)
+        print(f"done {nowstamp()}")
+        return r
     
     except Exception as e:
         stack_trace = traceback.format_exc()
+        print(f"error {nowstamp()}")
+        print(stack_trace)
         return jsonify({'error': str(e), 'stack': stack_trace}), 400
 
 if __name__ == '__main__':

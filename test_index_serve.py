@@ -3,6 +3,11 @@ import json
 import sys
 import uuid
 guid = uuid.uuid4()
+from datetime import datetime
+
+def nowstamp():
+    now = datetime.now()
+    return now.strftime("%H:%M:%S.%f")[:-3]
 
 def send_log_message(guid, title, message):
     url = 'http://localhost:8080/log'
@@ -43,7 +48,9 @@ headers = {
 }
 
 # Make the request
+print (f"start request {nowstamp()}")
 response = requests.post(url, headers=headers, data=json.dumps(payload))
+print (f"got response {nowstamp()}")
 j = response.json()
 for item in j:
     d = item["distance"]
