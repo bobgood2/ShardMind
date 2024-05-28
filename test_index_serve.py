@@ -22,18 +22,19 @@ def send_log_message(guid, title, message):
 # URL of the API
 url = "http://127.0.0.1:5001/search"
 
+query_text = "faiss"
 # Check if the query text was passed as a command line argument
 if len(sys.argv) > 1:
     query_text = sys.argv[1]
-else:
-    query_text = input("Enter your query string: ")
 send_log_message(guid, 'query', query_text)
 
 
 # Request payload
 payload = {
     "text": query_text,
-    "k": 5
+    "after": "2024-05-01T12:00:00Z",
+    "from": "joh",
+    "take": 5
 }
 
 # Set headers
@@ -43,9 +44,18 @@ headers = {
 
 # Make the request
 response = requests.post(url, headers=headers, data=json.dumps(payload))
+j = response.json()
+for item in j:
+    d = item["distance"]
+    id = item["id"]
+    email = item["email"]
+    subj = email["subject"]
+    frm = email["from"]
+    print(f"{id}: {d}: {subj} {str(frm)}")
+    pass
 
 # Print the response
-print(response.json())
+#print(response.json())
 
 send_log_message(guid, 'response', response.json())
 

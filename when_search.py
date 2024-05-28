@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class WhenSeach():
     def __init__(self):
@@ -46,9 +47,10 @@ class WhenSeach():
             start=len(self.data)-1
         return end,start
 
-            
-
-        
+    def items_over_n_months(self, n_months):
+        current_date = datetime.now()
+        past_date = current_date - relativedelta(months=n_months) 
+        return self.reverse_bisect_left(self.data, past_date)
 
 if __name__ == "__main__":
     # Example usage

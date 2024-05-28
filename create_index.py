@@ -3,6 +3,7 @@ import numpy as np
 import faiss
 import json
 from datetime import datetime
+import shutil
 
 def metadata_path(file_path):
     dirname = os.path.dirname(file_path)
@@ -62,6 +63,14 @@ print(f"Loaded {len(embeddings)} embeddings with shape {embeddings.shape}")
 
 sorted_embeddings, sorted_filenames = sort_by_age(embeddings, filenames, ages)
 
+# calculate size for 3 months
+max_short_age = 3 *31*24*3600
+short_size=len(sorted_embeddings)
+for idx in range(len(sorted_embeddings)):
+    short_size=idx
+    if age[idx]>max_short_age:
+        break
+    
 # Create a FAISS index
 d = sorted_embeddings.shape[1]
 nlist = 100  # Number of clusters
@@ -78,12 +87,48 @@ print("FAISS index created and embeddings added")
 
 # Path to save the FAISS index
 index_file_path = r'C:\download\email_index.faiss'
-mapping_file_path = r'C:\download\email_index_mappings'
 
 # Save the index
 faiss.write_index(index, index_file_path)
 
+# Create a recent FAISS index
+d = sorted_embeddings.shape[1]
+nlist = 100  # Number of clusters
+quantizer = faiss.IndexFlatL2(d)  # Quantizer
+index = faiss.IndexIVFFlat(quantizer, d, nlist)
+
+# Train the index
+index.train(sorted_embeddings)
+
+# Add embeddings to the index
+index.add(sorted_embeddings)
+
+print("FAISS index created and embeddings added")
+
+# Path to save the FAISS index
+index_file_path = r'C:\download\email_index.faiss'
+
+# Save the index
+faiss.write_index(index, index_file_path)
+
+
+mapping_file_path = r'C:\download\email_index_mappings'
+
 with open(mapping_file_path, 'w') as f:
     json.dump(sorted_filenames, f)
+    
+indexed_embeddings = r'C:\download\email_indexed_embeddings'
+embeddings_dir = r'C:\download\email_embeddings'
 
 print(f"FAISS index saved to {index_file_path}")
+
+for i, fn in enumerate(sorted_filenames):
+    src_file = os.path.join(embeddings, fn)
+    dest_file = os.path.join(indexed_embeddings, f"{i}.npy")
+    if i%100==0:
+        print(i)
+        
+    # Copy the file to the new location with the new name
+    shutil.copy(src_file, dest_file)
+    
+print(f"sorted embeddings saved")

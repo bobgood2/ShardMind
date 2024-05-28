@@ -137,17 +137,17 @@ class WhoSeach(pytrie.Trie):
     def request(self, request):
         posting_lists=[]
         grps=['sender','from','toRecipients','ccRecipients','bccRecipients','replyTo']
-        all_text={}
+        all_text=[]
         for grp in grps:
             if grp in request:
                 text= request[grp]
                 for sub in text.split(','):
-                    all_text.add(sub)
+                    all_text.append(sub)
                     results = self.search(sub.strip())
                     for result in results:
                         if grp in result:
                             posting_lists.append(result[grp])
-        return posting_lists, all_text.join(" ")
+        return posting_lists, " ".join(all_text)
         
 
 if __name__ == "__main__":
@@ -156,7 +156,8 @@ if __name__ == "__main__":
 
     search.read_who('C:\download\email_who.json')
 
-    print(search.request({'from': 'bob, nitin', 'ccRecipients': 'shob'}))  # Output: {1, 2, 3}
+    r2, lo=search.request({'from': 'bob, nitin', 'ccRecipients': 'shob'})
+    print(r2)  # Output: {1, 2, 3}
 
     print(search.search('bob'))  # Output: {1, 2, 3}
 
