@@ -1,29 +1,35 @@
-import json
+import sys
 import os
+sys.path.append(os.getcwd())
+import json
+from Config import config
+import traceback
 
 from numpy import frombuffer
 
-# Path to the JSON file
-mapping_file_path = r'C:\download\email_index_mappings'
+# create_posting_list depends on index_build because it reads the 
+# mappings file (i.e. id assignment per objet)
+# populates the posting list directory
+# also creates the when file, since Ids are sorted by age
 
 # Read the sorted filenames from the JSON file
-with open(mapping_file_path, 'r') as f:
+with open(config.EMAILS_MAPPING_FILE, 'r') as f:
     sorted_filenames = json.load(f)
-
-emails_dir = 'C:\download\emails_metadata'
-posting_list_dir = 'C:\download\email_posting_lists'
 
 posting_lists = {}
 when_list = []
 
 def postWho(prefix, who, index):
+    if who==None:
+        return
     try:
         token = (prefix, who[0], who[1])
         if token not in posting_lists:
             posting_lists[token]=set([])
         posting_lists[token].add(index)
     except Exception as e:
-        print(f"exception {e}")
+        stack_trace = traceback.format_exc()
+        print(f"exception {e} {stack_trace}")
 
 def postBool(prefix, val, index):
     if val:
@@ -39,7 +45,7 @@ for index in range(len(sorted_filenames)):
     root, ext = os.path.splitext(fn)
     new_filename = root + ".json"
     try:
-        with open(os.path.join(emails_dir, new_filename), 'r') as f:
+        with open(os.path.join(config.EMAILS_METADATA_DIR, new_filename), 'r') as f:
             metadata = json.load(f)
             when = metadata['receivedDateTime']
             when_list.append(when)
@@ -59,9 +65,7 @@ for index in range(len(sorted_filenames)):
     except:
         pass
 
-posting_list_dir = 'C:\download\email_posting_lists'
-
-with open("C:\download\email_when.json", 'w') as f:
+with open(config.EMAILS_WHEN_FILE, 'w') as f:
     json.dump(when_list, f)
 
 import re
@@ -85,8 +89,9 @@ def sanitize_filename(input_tuple, max_length=250):
     
     return filename
 
+print("writing files")
 for poster in posting_lists.keys():
-    fn = os.path.join(posting_list_dir, sanitize_filename(poster))
+    fn = os.path.join(config.EMAILS_POSTING_LIST_DIR, sanitize_filename(poster))
     try:
         with open(fn, 'w') as f:
             data = {"token": poster, "posting_list": list(posting_lists[poster])}

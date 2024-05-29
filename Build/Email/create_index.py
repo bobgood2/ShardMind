@@ -1,16 +1,15 @@
+import sys
 import os
+sys.path.append(os.getcwd())
 import numpy as np
 import faiss
 import json
 from datetime import datetime
 import shutil
+from Config import config
 
-def metadata_path(file_path):
-    dirname = os.path.dirname(file_path)
-    before_underscore = dirname.split('_')[0]
-    filename_with_extension = os.path.basename(file_path)
-    filename, _ = os.path.splitext(filename_with_extension)
-    return os.path.join(f"{before_underscore}_metadata", f"{filename}.json")
+# create_index depends on build.
+# creates the index and the index_mappings
 
 def load_embeddings_from_directory(directory, expected_embedding_dim):
     embeddings_list = []
@@ -29,7 +28,7 @@ def load_embeddings_from_directory(directory, expected_embedding_dim):
                 continue
             
             try:
-                with open(metadata_path(file_path), 'r') as file:
+                with open(config.metadata_path(file_path), 'r') as file:
                     metadata = json.load(file)
             except:
                 continue
@@ -56,8 +55,7 @@ def sort_by_age(embeddings, filenames, ages):
     return sorted_embeddings, sorted_filenames
 
 # Directory containing the .npy embedding files
-embeddings_dir = r'C:\download\emails_embeddings'
-embeddings, filenames, ages = load_embeddings_from_directory(embeddings_dir, 384)
+embeddings, filenames, ages = load_embeddings_from_directory(config.EMAILS_EMBEDDINGS_DIR, 384)
 
 print(f"Loaded {len(embeddings)} embeddings with shape {embeddings.shape}")
 
@@ -68,7 +66,7 @@ max_short_age = 3 *31*24*3600
 short_size=len(sorted_embeddings)
 for idx in range(len(sorted_embeddings)):
     short_size=idx
-    if age[idx]>max_short_age:
+    if ages[idx]>max_short_age:
         break
     
 # Create a FAISS index
@@ -85,11 +83,8 @@ index.add(sorted_embeddings)
 
 print("FAISS index created and embeddings added")
 
-# Path to save the FAISS index
-index_file_path = r'C:\download\email_index.faiss'
-
 # Save the index
-faiss.write_index(index, index_file_path)
+faiss.write_index(index, config.EMAILS_INDEX_FILE)
 
 # Create a recent FAISS index
 d = sorted_embeddings.shape[1]
@@ -105,26 +100,18 @@ index.add(sorted_embeddings)
 
 print("FAISS index created and embeddings added")
 
-# Path to save the FAISS index
-index_file_path = r'C:\download\email_index.faiss'
-
 # Save the index
-faiss.write_index(index, index_file_path)
+faiss.write_index(index, config.EMAILS_INDEX_FILE)
 
 
-mapping_file_path = r'C:\download\email_index_mappings'
-
-with open(mapping_file_path, 'w') as f:
+with open(config.EMAILS_MAPPING_FILE, 'w') as f:
     json.dump(sorted_filenames, f)
     
-indexed_embeddings = r'C:\download\email_indexed_embeddings'
-embeddings_dir = r'C:\download\email_embeddings'
-
-print(f"FAISS index saved to {index_file_path}")
+print(f"FAISS index saved to {config.EMAILS_INDEX_FILE}")
 
 for i, fn in enumerate(sorted_filenames):
-    src_file = os.path.join(embeddings, fn)
-    dest_file = os.path.join(indexed_embeddings, f"{i}.npy")
+    src_file = os.path.join(config.EMAILS_EMBEDDINGS_DIR, fn)
+    dest_file = os.path.join(config.EMAILS_INDEXED_EMBEDDINGS_DIR, f"{i}.npy")
     if i%100==0:
         print(i)
         

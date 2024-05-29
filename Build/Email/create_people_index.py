@@ -1,19 +1,24 @@
-import json
+import sys
 import os
+sys.path.append(os.getcwd())
+import json
 from sentence_transformers import SentenceTransformer
 import faiss
+from Config import config
 
-posting_list_dir = 'C:\download\email_posting_lists'
+# create_people_index depends on create_posting_list
+# it creates a trie for names, and also a direct lookup for full names
+# and email addresses
 
 who_data = {}
 who_ref_list = {}
 fcnt=0
-for file_path in os.listdir(posting_list_dir):
+for file_path in os.listdir(config.EMAILS_POSTING_LIST_DIR):
     if file_path.endswith('.json'):
         fcnt+=1
         if fcnt%100==0:
             print(fcnt)
-        with open(os.path.join(posting_list_dir, file_path), 'r') as file:
+        with open(os.path.join(config.EMAILS_POSTING_LIST_DIR, file_path), 'r') as file:
             json_data = json.load(file)
             token = json_data["token"]
             pcnt = len(json_data["posting_list"])
@@ -29,28 +34,27 @@ for file_path in os.listdir(posting_list_dir):
 
 who_list = [(key[0], key[1], value, who_ref_list[key]) for key, value in who_data.items()]
          
-email_who_file = 'C:\download\email_who.json'
-with open(email_who_file, 'w') as f:
+with open(config.EMAILS_WHO_FILE, 'w') as f:
     json.dump(who_list, f)
 
-# 128 dim model:    
-model = SentenceTransformer('paraphrase-MiniLM-L12-v2')
-# Initialize the SentenceTransformer model (384 dimensions)
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# unneeded model, because we can use trie
+def build_faiss():
+    # 128 dim model:    
+    model = SentenceTransformer('paraphrase-MiniLM-L12-v2')
+    # Initialize the SentenceTransformer model (384 dimensions)
+    model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Combine name and email for embedding
-texts = [f"{entry[0]} {entry[1]}" for entry in who_list]
+    # Combine name and email for embedding
+    texts = [f"{entry[0]} {entry[1]}" for entry in who_list]
 
-# Generate embeddings for each entry
-embeddings = model.encode(texts, convert_to_tensor=True).cpu().numpy()
+    # Generate embeddings for each entry
+    embeddings = model.encode(texts, convert_to_tensor=True).cpu().numpy()
 
-# Create a FAISS index
-index = faiss.IndexFlatL2(embeddings.shape[1])
-index.add(embeddings)
+    # Create a FAISS index
+    index = faiss.IndexFlatL2(embeddings.shape[1])
+    index.add(embeddings)
 
-# Save the FAISS index and the data
-index_file_path = 'c:\download\email_who_index.faiss'
+    faiss.write_index(index, config.EMAILS_INDEX_FILE)
+    print(f"FAISS index saved to {config.EMAILS_INDEX_FILE}")
 
-faiss.write_index(index, index_file_path)
-print(f"FAISS index saved to {index_file_path}")
 

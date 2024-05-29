@@ -1,10 +1,12 @@
+import sys
 import os
+sys.path.append(os.getcwd())
 import requests
 import json
 from datetime import datetime
+from Config import config
 
 import subprocess
-import os
 import jwt
 
 def get_token():
@@ -79,13 +81,11 @@ def read_json_files(directory):
             yield (file_path, json_data)
 
 
-emails_dir = 'C:\download\emails'
-
 parentfolders = set([])
 
 num=0;
 smallest_age=10000
-for (path, email) in read_json_files(emails_dir):
+for (path, email) in read_json_files(config.EMAILS_RAW_DIR):
     if 'parentFolderId' in email:
         num+=1
         if num%100==0:

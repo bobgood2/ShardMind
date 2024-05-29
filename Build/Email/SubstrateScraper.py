@@ -1,12 +1,13 @@
+import sys
 import os
+sys.path.append(os.getcwd())
 import requests
 import json
-
+from Config import config
 import subprocess
-import os
 import jwt
 
-TOKEN_FILE = 'access_token.txt'
+TOKEN_FILE = 'config\\access_token.txt'
 def get_access_token():
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, 'r') as f:
@@ -38,15 +39,15 @@ headers = {
 }
 
 # Function to get the next link from the checkpoint file
-def get_next_link(checkpoint_file):
-    if os.path.exists(checkpoint_file):
-        with open(checkpoint_file, 'r') as f:
+def get_next_link():
+    if os.path.exists(config.EMAILS_CHECKPOINT_FILE):
+        with open(config.EMAILS_CHECKPOINT_FILE, 'r') as f:
             return f.read().strip()
     return None
 
 # Function to save the next link to the checkpoint file
-def save_next_link(checkpoint_file, next_link):
-    with open(checkpoint_file, 'w') as f:
+def save_next_link(next_link):
+    with open(config.EMAILS_CHECKPOINT_FILE, 'w') as f:
         f.write(next_link)
 
 wcnt=0
@@ -62,34 +63,34 @@ def save_email(email, directory):
         wcnt+=1
 
 # Function to get all emails incrementally
-def get_emails_incrementally(endpoint, headers, checkpoint_file, directory):
-    next_link = get_next_link(checkpoint_file) or endpoint
+def get_emails_incrementally(endpoint, headers):
+    next_link = get_next_link() or endpoint
     while next_link:
         response = requests.get(next_link, headers=headers)
         if response.status_code == 200:
             data = response.json()
             for email in data.get('value', []):
-                save_email(email, directory)
+                save_email(email, config.EMAILS_RAW_DIR)
             next_link = data.get('@odata.nextLink', None)  # Get the next page link
             if next_link:
-                save_next_link(checkpoint_file, next_link)
+                save_next_link(next_link)
         else:
             print(f"Error: {response.status_code} - {response.text}")
             break
 
 # Directory to save emails and checkpoint file
-email_directory = r'c:\download\emails'
-checkpoint_file = r'c:\download\emails\checkpoint.txt'
+config.EMAILS_RAW_DIR = r'c:\download\emails'
+config.EMAILS_CHECKPOINT_FILE = r'c:\download\emails\checkpoint.txt'
 
-checkpoint_file = 'checkpoint.txt'
+config.EMAILS_CHECKPOINT_FILE = 'checkpoint.txt'
 
 # Create the directory if it doesn't exist
-if not os.path.exists(email_directory):
-    os.makedirs(email_directory)
+if not os.path.exists(config.EMAILS_RAW_DIR):
+    os.makedirs(config.EMAILS_RAW_DIR)
 
 # Fetch emails incrementally
-get_emails_incrementally(endpoint, headers, checkpoint_file, email_directory)
+get_emails_incrementally(endpoint, headers)
 
-print(f"Emails have been saved to the '{email_directory}' directory.")
+print(f"Emails have been saved to the '{config.EMAILS_RAW_DIR}' directory.")
 print(f"{wcnt} files written")
 print(f"{last_t} last time")

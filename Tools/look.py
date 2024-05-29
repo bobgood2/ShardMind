@@ -1,11 +1,13 @@
+import sys
 import os
+sys.path.append(os.getcwd())
 from datetime import datetime
 import json
+from Config import config
 
-email_dir="C:\download\emails"
 def get_age(file_path):
     try:
-        fp=email_dir+"\\"+file_path
+        fp=config.EMAILS_RAW_DIR+"\\"+file_path
         with open(fp, 'r') as file:
             metadata = json.load(file)
     except:
@@ -35,7 +37,7 @@ def get_directory_info(directory_path):
     latest_time = datetime.fromtimestamp(latest_time).strftime('%Y-%m-%d %I:%M %p') if latest_time else None
     return num_files, latest_time, get_age(last_file)
 
-dirs=['C:\download\emails','C:\download\emails_metadata','C:\download\emails_embeddings']
+dirs=[config.EMAILS_RAW_DIR,config.EMAILS_METADATA_DIR,config.EMAILS_EMBEDDINGS_DIR]
 
 # Replace 'your_directory_path' with the path to the directory you want to check
 directory_path = 'your_directory_path'

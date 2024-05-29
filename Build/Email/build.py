@@ -1,12 +1,19 @@
+import sys
+import os
+sys.path.append(os.getcwd())
 import re
 import json
-import os
+from Config import config
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import traceback
 
 from bs4 import BeautifulSoup
 from sentence_transformers import SentenceTransformer
 import numpy as np
+
+# Build depends on scraper output.
+# it creates embeddings and metaata
 
 # Function to strip HTML tags
 def strip_html(html_content):
@@ -73,8 +80,11 @@ def strip_html(html_content):
 
 # Preprocess text
 def preprocess_text(text):
-    return re.sub(r'\W+', ' ', text).lower()
-
+    try:
+        return re.sub(r'\W+', ' ', text).lower()
+    except:
+        return ""
+    
 # Load a pre-trained model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -89,17 +99,6 @@ def get_filename_only(file_path):
     filename, _ = os.path.splitext(filename_with_extension)
     return filename
 
-def embeddings_path(file_path):
-    dirname = os.path.dirname(file_path)
-    filename_with_extension = os.path.basename(file_path)
-    filename, _ = os.path.splitext(filename_with_extension)
-    return os.path.join(f"{dirname}_embeddings", f"{filename}.npy")
-
-def metadata_path(file_path):
-    dirname = os.path.dirname(file_path)
-    filename_with_extension = os.path.basename(file_path)
-    filename, _ = os.path.splitext(filename_with_extension)
-    return os.path.join(f"{dirname}_metadata", f"{filename}.json")
 
 def get_name_addr(item):
     who=item["emailAddress"]
@@ -123,12 +122,12 @@ def write_metadata(email, path):
         'isDraft': email.get('isDraft"', {}),
         'hasAttachments': email.get('hasAttachments', {})
     }
-    with open(metadata_path(path), 'w') as f:
+    with open(config.metadata_path(path), 'w') as f:
         json.dump(email_metadata, f)
 
-def read_json_files(directory):
-    for file_path in scan_directory_for_json_files(directory):
-        if not os.path.exists(metadata_path(file_path)) or not os.path.exists(embeddings_path(file_path)):
+def read_json_files():
+    for file_path in scan_directory_for_json_files(config.EMAILS_RAW_DIR):
+        if not os.path.exists(config.metadata_path(file_path)) or not os.path.exists(config.embeddings_path(file_path)):
             print (file_path)
             with open(file_path, 'r') as file:
                 json_data = json.load(file)
@@ -146,13 +145,14 @@ def get_weighted_embedding(email, weights):
     ) / sum(weights.values())
     return combined_embedding
 
-def preprocess_emails_from_directory(directory):
-    for (path, email) in read_json_files(directory):
+def preprocess_emails_from_directory():
+    for (path, email) in read_json_files():
         try:
             emb=get_weighted_embedding(email, weights)
             yield (path, emb )
         except Exception as e:
-            print (f"error in {emb}")
+            stack_trace = traceback.format_exc()
+            print (f"error in {e} {stack_trace}")
 
 weights = {
     'subject': 3,
@@ -160,9 +160,8 @@ weights = {
     'bodyPreview': 2,
     'bodyContent': 1
 }
-emails_dir = 'C:\download\emails'
 
-for (path, embedding) in preprocess_emails_from_directory(emails_dir):
-    epath = embeddings_path(path)
+for (path, embedding) in preprocess_emails_from_directory():
+    epath = config.embeddings_path(path)
     np.save(epath, embedding)
     

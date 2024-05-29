@@ -56,7 +56,6 @@ if __name__ == "__main__":
     # Example usage
     when_search = WhenSeach()
 
-   # when_search.read_when('C:\download\email_when.json')
     when_search.data = [
                        when_search.timestamp('2023-01-01T17:00:00Z'),
                        when_search.timestamp('2023-01-01T16:00:00Z'),

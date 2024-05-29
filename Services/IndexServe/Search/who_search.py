@@ -1,7 +1,11 @@
+import sys
+import os
+sys.path.append(os.getcwd())
 import pytrie
 import json
 import re
 from itertools import combinations
+from Config import config
 
 def sanitize_filename(input_tuple, max_length=250):
     # Combine the tuple elements into a single string
@@ -153,8 +157,7 @@ class WhoSeach(pytrie.Trie):
 if __name__ == "__main__":
     # Example usage
     search = WhoSeach()
-
-    search.read_who('C:\download\email_who.json')
+    search.read_who(config.EMAILS_WHO_FILE)
 
     r2, lo=search.request({'from': 'bob, nitin', 'ccRecipients': 'shob'})
     print(r2)  # Output: {1, 2, 3}

@@ -1,15 +1,19 @@
-import dis
+import sys
 import os
+sys.path.append(os.getcwd())
+
+import dis
 import numpy as np
 import faiss
 import json
 from flask import Flask, request, jsonify
 from sentence_transformers import SentenceTransformer
-import who_search
-import when_search
+from Search import who_search
+from Search import when_search
 import traceback
+import torch
+from Config import config
 from datetime import datetime
-
 def nowstamp():
     now = datetime.now()
     return now.strftime("%H:%M:%S.%f")[:-3]
@@ -21,22 +25,15 @@ k_months = 3            # the number of months to precache embeddings, and to al
 k_group = 300           # the number of scattered embeddings we are willing to read from disk before doing an approximate search
 k_take_multiplier = 40  # take is multiplied by this if we need to filter after a search over a large corpus
 
-# Path to the saved FAISS index
-index_file_path = r'C:\download\email_index.faiss'
-mapping_file_path = r'c:\download\email_index_mappings'
-emails_dir = 'C:\download\emails'
-posting_list_dir = 'C:\download\email_posting_lists'
-
-indexed_embeddings = r'C:\download\emails_indexed_embeddings'
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Load the mapping
-with open(mapping_file_path, 'r') as f:
+with open(config.EMAILS_MAPPING_FILE, 'r') as f:
     filenames = json.load(f)
 
 # Load the FAISS index
 print ("loading index")    
-index = faiss.read_index(index_file_path)
+index = faiss.read_index(config.EMAILS_INDEX_FILE)
 
 # Define the dimension of embeddings (should match your embeddings' dimension)
 embedding_dim = 384
@@ -44,20 +41,20 @@ embedding_dim = 384
 print ("loading ages")    
 when_search = when_search.WhenSeach()
 
-when_search.read_when('C:\download\email_when.json')
+when_search.read_when(config.EMAILS_WHEN_FILE)
 
 k_recent = when_search.items_over_n_months(k_months)
 
 print ("loading people info")    
 who_search = who_search.WhoSeach()
 
-who_search.read_who('C:\download\email_who.json')
+who_search.read_who(config.EMAILS_WHO_FILE)
 
 posting_list_cache = {}
 def read_posting_list(fn):
     if fn in posting_list_cache:
         return posting_list_cache[fn]
-    with open(os.path.join(posting_list_dir, fn), 'r') as f:
+    with open(os.path.join(config.EMAILS_POSTING_LIST_DIR, fn), 'r') as f:
         try:
             item = json.load(f)["posting_list"]
             posting_list_cache[fn]=item
@@ -69,7 +66,7 @@ embedding_cache = {}
 def read_embedding(index):
     if index in embedding_cache:
         return embedding_cache[index]
-    file_path=os.path.join(indexed_embeddings, str(index)+".npy")
+    file_path=os.path.join(config.EMAILS_INDEXED_EMBEDDINGS_DIR, str(index)+".npy")
     embedding = np.load(file_path)
     if embedding.shape[0] != expected_embedding_dim:
         raise ValueError("mismatched embedding shape")
@@ -100,7 +97,7 @@ def change_extension_and_path(filename, new_path, new_extension):
 
 def get_raw_emails(idx):
     fn = filenames[int(idx)]
-    file_path = change_extension_and_path(fn, emails_dir, ".json")
+    file_path = change_extension_and_path(fn, config.EMAILS_RAW_DIR, ".json")
     with open(file_path, 'r') as file:
         return json.load(file)
     
@@ -166,8 +163,14 @@ def search():
         query_text = query.get('text', '')        
         if len(query_text)==0:
             query_text = backup_text
-        # Generate the embedding for the query string
-        query_embedding = model.encode([query_text], convert_to_tensor=True).cpu().numpy().reshape(1, -1)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print(f'Using device: {device}')
+
+        # Move the model to GPU
+        model.to(device)
+
+        # Encode the query text on GPU
+        query_embedding = model.encode([query_text], convert_to_tensor=True).to('cpu').numpy().reshape(1, -1)
         
         # Check if the query embedding has the correct dimension
         if query_embedding.shape[1] != embedding_dim:
