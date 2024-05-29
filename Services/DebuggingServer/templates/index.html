@@ -17,6 +17,15 @@
             overflow-y: auto;
             position: relative;
             margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .text-block pre {
+            padding: 0;
+            margin: 0;
+            background-color: transparent; /* or inherit to take the background color of the parent */
+            border: none;
+            border-radius: 0;
         }
 
         .copy-btn {
@@ -36,6 +45,12 @@
 
         .custom-node {
             white-space: normal !important;
+            margin-left: 20px; /* Ensure proper indentation */
+        }
+
+        .custom-content {
+            white-space: normal !important;
+            margin-left: 40px; /* Ensure proper indentation */
         }
     </style>
 </head>
@@ -48,7 +63,6 @@
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         $(document).ready(function () {
-
             // Initialize jsTree
             $('#treeview_json').jstree({
                 'core': {
@@ -59,10 +73,11 @@
 
             // Bind the event after jsTree initialization
             $('#treeview_json').on('refresh.jstree', function (e, data) {
-                const customNodes = $('.custom-node');
                 $('.custom-node').each(function () {
                     var dataHtml = $(this).attr('data-html');
                     if (dataHtml) {
+                        // Clear previous content to avoid duplication
+                        $(this).children('div').remove();
                         $(this).append(dataHtml);
                     }
                 });
