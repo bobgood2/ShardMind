@@ -20,13 +20,13 @@
             border-radius: 4px;
         }
 
-        .text-block pre {
-            padding: 0;
-            margin: 0;
-            background-color: transparent; /* or inherit to take the background color of the parent */
-            border: none;
-            border-radius: 0;
-        }
+            .text-block pre {
+                padding: 0;
+                margin: 0;
+                background-color: transparent; /* or inherit to take the background color of the parent */
+                border: none;
+                border-radius: 0;
+            }
 
         .copy-btn {
             position: absolute;
@@ -73,14 +73,15 @@
 
             // Bind the event after jsTree initialization
             $('#treeview_json').on('refresh.jstree', function (e, data) {
-                $('.custom-node').each(function () {
-                    var dataHtml = $(this).attr('data-html');
-                    if (dataHtml) {
-                        // Clear previous content to avoid duplication
-                        $(this).children('div').remove();
-                        $(this).append(dataHtml);
-                    }
-                });
+                addCustomContent();
+            });
+
+            $('#treeview_json').on('open_node.jstree', function (e, data) {
+                addCustomContent();
+            });
+
+            $('#treeview_json').on('close_node.jstree', function (e, data) {
+                removeCustomContent();
             });
 
             // Initialize tree with data from socket
@@ -96,6 +97,24 @@
         function initializeTree(data) {
             $('#treeview_json').jstree(true).settings.core.data = JSON.parse(data);
             $('#treeview_json').jstree(true).refresh();
+        }
+
+        function addCustomContent() {
+            $('.custom-node').each(function () {
+                var dataHtml = $(this).attr('data-html');
+                if (dataHtml) {
+                    // Clear previous content to avoid duplication
+                    $(this).children('div').remove();
+                    $(this).append(dataHtml);
+                }
+            });
+        }
+
+        function removeCustomContent() {
+            $('.custom-node').each(function () {
+                // Remove the custom content to ensure it is hidden when the node is collapsed
+                $(this).children('div').remove();
+            });
         }
 
         function copyToClipboard(elementId) {

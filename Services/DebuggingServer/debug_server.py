@@ -44,21 +44,25 @@ def TreeData(log_data):
             "children": []
         }
         for title, messages in log_data[guid]:
-            child_html = '<div class="custom-content">'
+            grand_child_html = '<div class="custom-content">'
             for preceding_text, copyable_text in messages.items():
-                child_html += f"""
+                grand_child_html += f"""
                     <p>{preceding_text}</p>
                     <div class='text-block' id='{guid}-{title}-{preceding_text}'>
-                   
                         <button class='copy-btn'  style='padding: 1px 3px; font-size: 12px;' onclick="copyToClipboard('{guid}-{title}-{preceding_text}')">Copy</button>
                         <pre>{copyable_text}</pre>
                     </div>
                 """
-            child_html += "</div>"
+            grand_child_html += "</div>"
+            grand_child_node = {
+                "text": "Details",
+                "li_attr": {"class": "custom-node", "data-html": grand_child_html},
+                "a_attr": {"href": "#"}
+            }
             child_node = {
                 "text": title,
-                "li_attr": {"class": "custom-node", "data-html": child_html},
-                "a_attr": {"href": "#"}
+                "state": {"opened": False},
+                "children": [grand_child_node]
             }
             guid_node["children"].append(child_node)
         tree_data.append(guid_node)
