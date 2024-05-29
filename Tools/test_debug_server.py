@@ -2,6 +2,7 @@ import requests
 import json
 import sys
 import uuid
+import threading
 guid = str(uuid.uuid4())
 from datetime import datetime, timedelta
 
@@ -19,16 +20,19 @@ def send_log_message(data):
     url = 'http://localhost:8080/log'
     headers = {'Content-Type': 'application/json'}
 
-    try:
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        if response.status_code == 204:
-            print("Log message sent successfully.")
-        else:
-            print(f"response_code {response.status_code}")
-            pass
-    except requests.exceptions.RequestException as e:
-        print(f"exception {e}")
-        pass
+    def send_request():
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            if response.status_code == 204:
+                print("Log message sent successfully.")
+            else:
+                print(f"response_code {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"exception {e}")
+
+    # Run the request in a separate thread
+    thread = threading.Thread(target=send_request)
+    thread.start()
     
 print("running")
 t1= datetime.now()
