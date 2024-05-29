@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App\" />
+    <Folder Include="App\Orchestrator\" />
     <Folder Include="Scripts\" />
     <Folder Include="Services\DebuggingServer\templates\" />
     <Folder Include="Services\IndexServe\Search\" />
@@ -61,6 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\chatbot.py" />
+    <Compile Include="App\Orchestrator\logging.py" />
+    <Compile Include="App\Orchestrator\user_request.py" />
+    <Compile Include="App\Orchestrator\__init__.py" />
     <Compile Include="App\__init__.py" />
     <Compile Include="Build\Email\build.py" />
     <Compile Include="Build\Email\clean.py" />
@@ -96,6 +100,7 @@
   <ItemGroup>
     <Content Include="Config\access_token.txt" />
     <Content Include="Sandbox\fmt.html" />
+    <Content Include="Scripts\app.bat" />
     <Content Include="Scripts\build.bat" />
     <Content Include="Scripts\buildall.bat" />
     <Content Include="Scripts\clean.bat" />

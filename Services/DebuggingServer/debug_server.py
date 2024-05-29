@@ -25,7 +25,7 @@ def log():
         duration = request.json.get('duration', 0)
         message = {}
         for item in request.json.keys():
-            if item == "guid" or item == "title":
+            if item == "guid" or item == "title" or item == "timestamp" or item == "duration":
                 continue
             message[item] = str(request.json[item])
         
@@ -62,7 +62,7 @@ def TreeData(log_data):
             for title, messages, start_time, duration in sorted_data:
                 latency = (start_time - orig_time).total_seconds()
                 total_latency=latency+duration
-                header = f"{title} start:{latency} duration:{duration}"
+                header = f"{title}  @{latency} duration:{duration}"
                 if duration==0:
                     header = f"{title} start:{latency}"
 

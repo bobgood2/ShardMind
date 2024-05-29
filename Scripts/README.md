@@ -26,6 +26,8 @@ debug_server <=  starts a service to collect logs visible on a web page
 
 test_debug_server  <= hits the debug server
 
+app <= starts the chatbot... but make sure all the servers are started first
+
 
 
 not yet:
