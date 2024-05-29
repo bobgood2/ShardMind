@@ -7,10 +7,10 @@ from datetime import datetime, timedelta
 
 def nowstamp():
     now = datetime.now()
-    return now.strftime("%H:%M:%S.%f")[:-3]
+    return now.strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z' 
 
 def thenstamp(then):
-    return then.strftime("%H:%M:%S.%f")[:-3]
+    return then.strftime('%Y-%m-%dT%H:%M:%S.%f') + 'Z'  
 
 def time_add(then, n):
     return then + timedelta(seconds=n)
