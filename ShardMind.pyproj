@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Build\Email\create_posting_lists.py</StartupFile>
+    <StartupFile>Tools\test_debug_server.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -46,14 +46,15 @@
   <ItemGroup>
     <Folder Include="App\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Services\DebuggingServer\templates\" />
     <Folder Include="Services\IndexServe\Search\" />
+    <Folder Include="Services\DebuggingServer\" />
     <Folder Include="Tools\" />
     <Folder Include="Tests\" />
     <Folder Include="Build\" />
     <Folder Include="Build\Email" />
     <Folder Include="Services\" />
     <Folder Include="Services\IndexServe" />
-    <Folder Include="Services\IndexServe\templates" />
     <Folder Include="Config\" />
     <Folder Include="Sandbox\" />
     <Folder Include="Morgue\" />
@@ -72,12 +73,13 @@
     <Compile Include="Build\__init__.py" />
     <Compile Include="Config\config.py" />
     <Compile Include="Config\__init__.py" />
-    <Compile Include="Morgue\debug_server.py" />
+    <Compile Include="Services\DebuggingServer\debug_server.py" />
     <Compile Include="Morgue\getfolders.py" />
     <Compile Include="Sandbox\llmClient.py" />
     <Compile Include="Sandbox\test.py" />
     <Compile Include="Sandbox\__init__.py" />
     <Compile Include="Scripts\__init__.py" />
+    <Compile Include="Services\DebuggingServer\__init__.py" />
     <Compile Include="Services\IndexServe\index_serve.py" />
     <Compile Include="Services\IndexServe\Search\when_search.py" />
     <Compile Include="Services\IndexServe\Search\who_search.py" />
@@ -86,23 +88,27 @@
     <Compile Include="Services\__init__.py" />
     <Compile Include="Tools\freeze.py" />
     <Compile Include="Tools\look.py" />
+    <Compile Include="Tools\test_debug_server.py" />
     <Compile Include="Tools\test_index_serve.py" />
     <Compile Include="Tools\__init__.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\access_token.txt" />
+    <Content Include="Sandbox\fmt.html" />
     <Content Include="Scripts\build.bat" />
     <Content Include="Scripts\buildall.bat" />
     <Content Include="Scripts\clean.bat" />
     <Content Include="Scripts\create_index.bat" />
     <Content Include="Scripts\create_people_index.bat" />
     <Content Include="Scripts\create_posting_lists.bat" />
+    <Content Include="Scripts\debug_server.bat" />
     <Content Include="Scripts\index_serve.bat" />
     <Content Include="Scripts\look.bat" />
     <Content Include="Scripts\README.md" />
     <Content Include="Scripts\scrape.bat" />
-    <Content Include="Services\IndexServe\templates\index.html" />
+    <Content Include="Scripts\test_debug_server.bat" />
+    <Content Include="Services\DebuggingServer\templates\index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

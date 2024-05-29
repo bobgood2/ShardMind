@@ -1,0 +1,1 @@
+python Tools\test_debug_server.py

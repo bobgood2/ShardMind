@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy to Clipboard Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .text-block {
+            background-color: #e0f7fa; /* Light blue background for the text block */
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-height: 100px; /* Adjust this value to set the maximum number of lines */
+            overflow-y: auto;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+            .copy-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+
+    <p>Normal line of text</p>
+    <div class="text-block" id="textBlock1">
+        <button class="copy-btn" onclick="copyToClipboard('textBlock1')">Copy</button>
+        <pre>This is a block of text
+that can be copied to the clipboard.
+It has a light blue background and is limited
+to a certain number of lines.</pre>
+    </div>
+
+    <p>Another normal line of text</p>
+    <div class="text-block" id="textBlock2">
+        <button class="copy-btn" onclick="copyToClipboard('textBlock2')">Copy</button>
+        <pre>This is another block of text
+that can be copied to the clipboard.
+It also has a light blue background and is limited
+to a certain number of lines.</pre>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function copyToClipboard(elementId) {
+            var $temp = $("<textarea>");
+            $("body").append($temp);
+            // Only select the text within the <pre> tag, excluding the button
+            $temp.val($("#" + elementId).children("pre").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+    </script>
+
+</body>
+</html>

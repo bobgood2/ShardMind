@@ -14,6 +14,9 @@ import traceback
 import torch
 from Config import config
 from datetime import datetime
+
+#url = "http://127.0.0.1:5001/search_email"
+
 def nowstamp():
     now = datetime.now()
     return now.strftime("%H:%M:%S.%f")[:-3]
@@ -125,7 +128,7 @@ def post_filter_search(query_embedding, union_set, take):
         filtered=filtered[:take]
     return filtered
    
-@app.route('/search', methods=['POST'])
+@app.route('/search_email', methods=['POST'])
 def search():
     print(f"start {nowstamp()}")
     try:

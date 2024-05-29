@@ -25,10 +25,10 @@ def send_log_message(guid, title, message):
 
 
 # URL of the API
-url = "http://127.0.0.1:5001/search"
+url = "http://127.0.0.1:5001/search_email"
 
 query_text = "faiss"
-# Check if the query text was passed as a command line argument
+# Check if the query text was passed as a command line aruidument
 if len(sys.argv) > 1:
     query_text = sys.argv[1]
 send_log_message(guid, 'query', query_text)

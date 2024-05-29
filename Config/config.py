@@ -5,6 +5,9 @@ root = os.getenv('INDEX_ROOT', 'index')  # Default to development if not set
 
 if root != 'index':
     print (f"**** {root} <==  root directory changed ***")
+    print (f"**** {root} <==  root directory changed ***")
+    print (f"**** {root} <==  root directory changed ***")
+    print (f"**** {root} <==  root directory changed ***")
     
 EMAILS_RAW_DIR = f'C:\{root}\email\emails'
 EMAILS_MAPPING_FILE = f'c:\{root}\email\index_mappings.json'
