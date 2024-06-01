@@ -2,6 +2,8 @@ import requests
 import json
 import sys
 import uuid
+import aiohttp
+import asyncio
 import threading
 from datetime import datetime, timedelta
 
@@ -14,6 +16,22 @@ def thenstamp(then):
 
 def time_add(then, n):
     return then + timedelta(seconds=n)
+
+def log(data):
+   asyncio.create_task(async_log(data))
+
+async def async_log(data):
+    url = 'http://localhost:8080/log'
+    headers = {'Content-Type': 'application/json'}
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url, headers=headers, data=json.dumps(data)) as response:
+                if response.status == 204:
+                    pass
+                else:
+                    print(f"response_code {response.status}")
+        except aiohttp.ClientError as e:
+            print(f"exception {e}")
 
 def send_log_message(data):
     url = 'http://localhost:8080/log'

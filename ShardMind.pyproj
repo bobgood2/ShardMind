@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Services\DebuggingServer\debug_server.py</StartupFile>
+    <StartupFile>Sandbox\test_timelang.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -46,6 +46,7 @@
   <ItemGroup>
     <Folder Include="App\" />
     <Folder Include="App\Orchestrator\" />
+    <Folder Include="App\Orchestrator\prompts\" />
     <Folder Include="Scripts\" />
     <Folder Include="Services\DebuggingServer\templates\" />
     <Folder Include="Services\IndexServe\Search\" />
@@ -62,7 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\chatbot.py" />
+    <Compile Include="App\Orchestrator\llm_client.py" />
     <Compile Include="App\Orchestrator\logging.py" />
+    <Compile Include="App\Orchestrator\prompt_builder.py" />
     <Compile Include="App\Orchestrator\user_request.py" />
     <Compile Include="App\Orchestrator\__init__.py" />
     <Compile Include="App\__init__.py" />
@@ -77,6 +80,8 @@
     <Compile Include="Build\__init__.py" />
     <Compile Include="Config\config.py" />
     <Compile Include="Config\__init__.py" />
+    <Compile Include="Sandbox\test_timelang.py" />
+    <Compile Include="Sandbox\timelang.py" />
     <Compile Include="Services\DebuggingServer\debug_server.py" />
     <Compile Include="Morgue\getfolders.py" />
     <Compile Include="Sandbox\llmClient.py" />
@@ -98,6 +103,7 @@
     <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Orchestrator\prompts\reason.md" />
     <Content Include="Config\access_token.txt" />
     <Content Include="Sandbox\fmt.html" />
     <Content Include="Scripts\app.bat" />
@@ -108,6 +114,7 @@
     <Content Include="Scripts\create_people_index.bat" />
     <Content Include="Scripts\create_posting_lists.bat" />
     <Content Include="Scripts\debug_server.bat" />
+    <Content Include="Scripts\freeze.bat" />
     <Content Include="Scripts\index_serve.bat" />
     <Content Include="Scripts\look.bat" />
     <Content Include="Scripts\README.md" />

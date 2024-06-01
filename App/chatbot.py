@@ -4,13 +4,7 @@ import chainlit as cl
 from Orchestrator import logging
 from Orchestrator import user_request
 
-# Start debugpy and wait for the debugger to attach
 print(f"Process ID: {os.getpid()}")
-# print("Waiting for debugger attach...")
-# debugpy.listen(("localhost", 5678))
-# debugpy.wait_for_client()
-# print("Debugger attached")
-# print(f"Running Python version: {sys.version}")
 
 cl.Message
 
@@ -21,7 +15,9 @@ async def on_message(chainlit_message):
         print("MESSAGE")
         print(str(message))
         request = user_request.Request(message)
-        response = request.process()
+        print("PROCESS")
+        response = await request.process()
+        print("SEND")
         await cl.Message(content=response).send()
     except Exception as e:
         print(f"Error in on_message: {e}")
