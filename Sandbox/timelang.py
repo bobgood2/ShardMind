@@ -3,36 +3,40 @@ from datetime import datetime, timedelta
 import calendar
 
 def parse_specific_date(tokens, reference_date):
-    pattern = re.compile(r'(\b\w+ \d{1,2}\b)')
+    pattern = re.compile(r'(\b\w+ \d{1,2}(?: \d{4})?\b)')
     match = pattern.match(' '.join(tokens))
     if match:
         date_str = match.group(0)
         try:
-            parsed_date = datetime.strptime(date_str, '%B %d')
-            parsed_date = parsed_date.replace(year=reference_date.year)
+            if len(date_str.split()) == 3:
+                parsed_date = datetime.strptime(date_str, '%B %d %Y')
+            else:
+                parsed_date = datetime.strptime(date_str, '%B %d')
+                parsed_date = parsed_date.replace(year=reference_date.year)
             start_of_day = parsed_date.replace(hour=0, minute=0, second=0, microsecond=0)
             end_of_day = parsed_date.replace(hour=23, minute=59, second=59, microsecond=999999)
-            return parsed_date, 2, (start_of_day, end_of_day)
+            return parsed_date, len(date_str.split()), (start_of_day, end_of_day)
         except ValueError:
             return None, 0, None
     return None, 0, None
 
 def parse_date_time(tokens, reference_date):
-    pattern = re.compile(r'(\b\w+ \d{1,2}) (\d{1,2}(:\d{2})?(am|pm)?)\b')
+    pattern = re.compile(r'(\b\w+ \d{1,2}(?: \d{4})?) (\d{1,2}(:\d{2})?(am|pm)?)\b')
     match = pattern.match(' '.join(tokens))
     if match:
         date_str, time_str = match.groups()[0], match.groups()[1]
         try:
-            parsed_date = datetime.strptime(date_str, '%B %d')
-            parsed_date = parsed_date.replace(year=reference_date.year)
+            if len(date_str.split()) == 3:
+                parsed_date = datetime.strptime(date_str, '%B %d %Y')
+            else:
+                parsed_date = datetime.strptime(date_str, '%B %d')
+                parsed_date = parsed_date.replace(year=reference_date.year)
             if 'am' in time_str or 'pm' in time_str:
                 parsed_time = datetime.strptime(time_str, '%I:%M%p' if ':' in time_str else '%I%p').time()
             else:
                 parsed_time = datetime.strptime(time_str, '%H:%M' if ':' in time_str else '%H').time()
             parsed_date = parsed_date.replace(hour=parsed_time.hour, minute=parsed_time.minute, second=0, microsecond=0)
-            start_of_day = parsed_date.replace(minute=0, second=0, microsecond=0)
-            end_of_day = parsed_date.replace(minute=59, second=59, microsecond=999999)
-            return parsed_date, 3, (start_of_day, end_of_day)
+            return parsed_date, len(date_str.split()) + 1, (parsed_date, parsed_date)
         except ValueError:
             return None, 0, None
     return None, 0, None
@@ -231,7 +235,7 @@ def parse_date_code(date_code, current_time=None):
     for parser in initial_parsers:
         parsed_date, tokens_consumed, range_tuple = parser(tokens[i:], reference_date)
         if parsed_date:
-            print(f"{i} {parser.__name__}: {parsed_date}")
+            # print(f"{i} {parser.__name__}: {parsed_date}")
             reference_date = parsed_date
             time_range = range_tuple
             i += tokens_consumed
@@ -245,19 +249,19 @@ def parse_date_code(date_code, current_time=None):
             else:
                 parsed_date, tokens_consumed, range_tuple = parser(tokens[i:], reference_date)
             if parsed_date:
-                print(f"{i} {parser.__name__}: {parsed_date}")
+                # print(f"{i} {parser.__name__}: {parsed_date}")
                 reference_date = parsed_date
                 time_range = range_tuple
                 i += tokens_consumed
                 break
         else:
-            print(f"{i} skipped")
+            # print(f"{i} skipped")
             i += 1  # If no parser matched, move to the next token
 
     return reference_date
 
 def get_timestamp_from_code(date_code, current_time=None):
-    print(date_code)
+    # print(date_code)
     timestamp = parse_date_code(date_code, current_time)
     return timestamp.isoformat()
 

@@ -8,7 +8,7 @@ class TestDateParser(unittest.TestCase):
         # Fixed current time for consistent testing
         self.current_time = datetime(2023, 3, 14, 12, 0, 0)
         print(self.current_time)
-    
+   
     def test_one_hour_ago(self):
         result = get_timestamp_from_code("1 hour ago", current_time=self.current_time)
         expected = (self.current_time - timedelta(hours=1)).isoformat()
@@ -65,6 +65,16 @@ class TestDateParser(unittest.TestCase):
     def test_month_plus_one_month(self):
         result = get_timestamp_from_code("April plus 1 month end", current_time=self.current_time)
         expected = datetime(2023, 5, 31, 23, 59, 59, 999999).isoformat()
+        self.assertEqual(result, expected)
+    
+    def test_year_date_month_plus_one_month(self):
+        result = get_timestamp_from_code("February 13 2015 plus 1 month", current_time=self.current_time)
+        expected = datetime(2015, 3, 13).isoformat()
+        self.assertEqual(result, expected)
+    
+    def test_year_date_time_month_plus_one_month(self):
+        result = get_timestamp_from_code("February 13 2015 15:19 plus 1 month", current_time=self.current_time)
+        expected = datetime(2015, 3, 13,15, 19).isoformat()
         self.assertEqual(result, expected)
     
     def test_month_minus_one_year(self):

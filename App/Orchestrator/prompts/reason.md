@@ -15,7 +15,97 @@ before and after are timestamps in this format: '2023-01-01T17:00:00Z'
 before and after times are inclusive, so if the actual date is exactly the same as the before or after timestamp the item will be included.
 the final result set will be the intersection of the name constraints, the time constraints and the text constraints.
 Do not do date and time calculations as part of your reasoning.  Instead use built in python functions to do date and time calculations.   If you are searching for emails last thursday, write a program that uses the now time stamp to figure out the date of last thursday and then the create the timestamp for midnight at the beginning and end of the day for before and after values.
+to do all date and time coding use the following now function that uses a natural language definition of date and time manipulation
+Prompt for LLM to Understand the "now" Function
 
+Understanding the "now" Function for Date and Time Range Parsing
+
+Description:
+Title: Understanding the "now" Function for Date and Time Range Parsing
+
+Description:
+The "now" function parses natural language instructions into specific date and time ranges. It supports various date and time adjustments, including relative shifts and specific points in time. This function can be used to translate arbitrary instructions into Python code for operations such as searches, where date ranges and text filters are commonly applied. Below is a comprehensive explanation of the rules, capabilities, and examples to ensure accurate usage of the "now" function.
+
+Capabilities and Rules:
+
+Relative Date Shifts:
+
+Format: "plus <number> <unit>", "minus <number> <unit>"
+Units: hours, minutes, days, weeks, months, quarters, years (singular forms are also supported)
+Examples:
+"plus 3 days" shifts the current date forward by 3 days.
+"minus 2.5 weeks" shifts the current date back by 2.5 weeks.
+Specific Date and Time:
+
+Format: "<Month> <Day> [<Time>]", "<Month> <Day> <Year> [<Time>]"
+Examples:
+"March 15" refers to March 15 of the current year.
+"March 15 2PM" refers to March 15 of the current year at 2:00 PM.
+"March 15 2022" refers to March 15, 2022.
+"March 15 2022 2PM" refers to March 15, 2022, at 2:00 PM.
+Relative Time Adjustments:
+
+Format: "<unit> start", "<unit> end"
+Units: hours, minutes, days, weeks, months, quarters, years (singular forms are also supported)
+Examples:
+"month start" refers to the beginning of the current month.
+"year end" refers to the end of the current year.
+Day of the Week Adjustments:
+
+Format: "previous <day>", "following <day>", "<day>"
+Days: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+Examples:
+"previous Tuesday" refers to the most recent Tuesday before today.
+"following Friday" refers to the next Friday after today.
+"Wednesday" refers to the upcoming Wednesday.
+Combining Adjustments:
+
+Adjustments can be combined to create complex date and time ranges.
+Examples:
+"March 15 2PM plus 3 days end" refers to 2:00 PM on March 18.
+"April minus 1 year end" refers to the end of April in the previous year.
+"previous Tuesday following April minus 1 year at 5PM end" refers to 5:00 PM on the first Tuesday after April of the previous year.
+Explicit Date and Time:
+
+Format: "<Year> <Month> <Day> [<Time>]"
+Examples:
+"2022 March 15" refers to March 15, 2022.
+"2022 March 15 2PM" refers to March 15, 2022, at 2:00 PM.
+Examples for LLM Usage:
+
+Basic Date and Time Range:
+
+Input: "last week"
+Output: search(after="2023-03-01T00:00:00", before="2023-03-07T23:59:59", text="...")
+Specific Date and Time:
+
+Input: "March 15 2PM"
+Output: search(after="2023-03-15T14:00:00", before="2023-03-15T14:00:00", text="...")
+Specific Date with Year:
+
+Input: "March 15 2022"
+Output: search(after="2022-03-15T00:00:00", before="2022-03-15T23:59:59", text="...")
+Specific Date and Time with Year:
+
+Input: "March 15 2022 2PM"
+Output: search(after="2022-03-15T14:00:00", before="2022-03-15T14:00:00", text="...")
+Relative Time Shifts:
+
+Input: "plus 3 days"
+Output: search(after="2023-03-17T00:00:00", before="2023-03-17T23:59:59", text="...")
+Complex Date Range:
+
+Input: "March 15 2PM plus 3 days end"
+Output: search(after="2023-03-15T14:00:00", before="2023-03-18T23:59:59", text="...")
+Day of the Week Adjustments:
+
+Input: "previous Tuesday"
+Output: search(after="2023-03-07T00:00:00", before="2023-03-07T23:59:59", text="...")
+Instructions for LLM:
+
+Interpret the provided natural language date and time instruction using the rules and examples given.
+Generate the appropriate Python code for the search function, filling in the after and before parameters with the parsed date and time values, and the text parameter with the user's specified search text.
+By following these guidelines, the "now" function will accurately convert natural language date and time instructions into the required Python code for date range and text-based searches.
 The return value of a search function is a list of objects.   
 [{'email': raw_email, 'distance': 3.14}]
 where the larger the distance, the less relevant the result is.
