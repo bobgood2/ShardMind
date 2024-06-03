@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Sandbox\test_timelang.py</StartupFile>
+    <StartupFile>Services\PlanServer\plan_server.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -51,6 +51,7 @@
     <Folder Include="Services\DebuggingServer\templates\" />
     <Folder Include="Services\IndexServe\Search\" />
     <Folder Include="Services\DebuggingServer\" />
+    <Folder Include="Services\PlanServer\" />
     <Folder Include="Tools\" />
     <Folder Include="Tests\" />
     <Folder Include="Build\" />
@@ -92,6 +93,9 @@
     <Compile Include="Services\IndexServe\index_serve.py" />
     <Compile Include="Services\IndexServe\Search\when_search.py" />
     <Compile Include="Services\IndexServe\Search\who_search.py" />
+    <Compile Include="Services\PlanServer\orchestrator.py" />
+    <Compile Include="Services\PlanServer\plan_server.py" />
+    <Compile Include="Services\PlanServer\__init__.py" />
     <Compile Include="Tests\__init__.py" />
     <Compile Include="Services\IndexServe\__init__.py" />
     <Compile Include="Services\__init__.py" />
@@ -117,6 +121,7 @@
     <Content Include="Scripts\freeze.bat" />
     <Content Include="Scripts\index_serve.bat" />
     <Content Include="Scripts\look.bat" />
+    <Content Include="Scripts\plan_server.bat" />
     <Content Include="Scripts\README.md" />
     <Content Include="Scripts\scrape.bat" />
     <Content Include="Scripts\test_debug_server.bat" />
