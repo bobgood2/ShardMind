@@ -1,11 +1,14 @@
-from Orchestrator import logging, prompt_builder
+from Orchestrator import app_logging as logging, prompt_builder
 import uuid
 from Orchestrator.llm_client import LLMClient
 from Orchestrator.prompt_builder import PromptBuilder
+from Orchestrator.plan_runner import PlanRunner
 from datetime import datetime, timedelta
 
 llmClient = LLMClient()
 promptBuilder = PromptBuilder()
+planRunner = PlanRunner()
+
 class Request:
     def __init__(self, user_query: str):
         self.user_query = user_query
@@ -71,5 +74,7 @@ class Request:
 
         # You can modify this method to process the user_query as needed
         result = await self.llmCall()
-        return result
+        print("starting plan: "+result)
+        program = await planRunner.Run(result, self.guid)
+        return program.final
 

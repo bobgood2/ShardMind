@@ -1,7 +1,7 @@
 import sys
 import os
 import chainlit as cl
-from Orchestrator import logging
+from Orchestrator import app_logging as logging
 from Orchestrator import user_request
 
 print(f"Process ID: {os.getpid()}")

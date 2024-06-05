@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Services\PlanServer\plan_server.py</StartupFile>
+    <StartupFile>App\Orchestrator\plan_runner.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -65,7 +65,8 @@
   <ItemGroup>
     <Compile Include="App\chatbot.py" />
     <Compile Include="App\Orchestrator\llm_client.py" />
-    <Compile Include="App\Orchestrator\logging.py" />
+    <Compile Include="App\Orchestrator\app_logging.py" />
+    <Compile Include="App\Orchestrator\plan_runner.py" />
     <Compile Include="App\Orchestrator\prompt_builder.py" />
     <Compile Include="App\Orchestrator\user_request.py" />
     <Compile Include="App\Orchestrator\__init__.py" />
@@ -81,6 +82,7 @@
     <Compile Include="Build\__init__.py" />
     <Compile Include="Config\config.py" />
     <Compile Include="Config\__init__.py" />
+    <Compile Include="Sandbox\myClient.py" />
     <Compile Include="Sandbox\test_timelang.py" />
     <Compile Include="Sandbox\timelang.py" />
     <Compile Include="Services\DebuggingServer\debug_server.py" />

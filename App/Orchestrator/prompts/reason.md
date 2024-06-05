@@ -4,10 +4,11 @@ If you choose to write a program, it will be run in a true python interpreter, b
 
 Currently we have only implemented one function while we develop this capability:
 
-search_email(text='...', sender='...', from='...', toReciepients='...', 'ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...)
+search_email(text='...', sender='...', fromWho='...', toRecipients='...', ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...', take=5)
 all function parameters are optional, 
 text is a natural language expression.
 all name related parameters can either be an exact match of the email address (i.e. 'bob@bing.com'), a complete display name (e.g. 'bob goodwin'), prefix letters from one-or-more words in the name (e.g. 'bo go'),  more than one name can be specified in the string if comma separated, and the comma is considered an or operator.
+take instructs the search server how many results to fetch, and defaults to 5
 The search engine will pick the most relevant name matches it can find and use them as constraints on the query.
 If you provide more than noe name parameter (e.g. toRecipients and ccRecipients) you will get an OR of results
 
@@ -18,100 +19,62 @@ Do not do date and time calculations as part of your reasoning.  Instead use bui
 to do all date and time coding use the following now function that uses a natural language definition of date and time manipulation
 Prompt for LLM to Understand the "now" Function
 
-Understanding the "now" Function for Date and Time Range Parsing
+# Title: Using the "now" Function for Date and Time Range Parsing
+
+Example Usage:
+
+```python
+search_email(after=now("yesterday start"), before=now("yesterday end"))
+```
 
 Description:
-Title: Understanding the "now" Function for Date and Time Range Parsing
+The "now" function translates natural language instructions into specific date and time ranges. It supports relative shifts and specific points in time, useful for searches requiring date ranges and text filters.
 
-Description:
-The "now" function parses natural language instructions into specific date and time ranges. It supports various date and time adjustments, including relative shifts and specific points in time. This function can be used to translate arbitrary instructions into Python code for operations such as searches, where date ranges and text filters are commonly applied. Below is a comprehensive explanation of the rules, capabilities, and examples to ensure accurate usage of the "now" function.
+Capabilities:
+Phrases below can be combined into a single statement.
 
-Capabilities and Rules:
+Specific Date and Time:
+One or none of the following can start the statement. If none, the current time is used.
+
+now("March 15") -> March 15 this year
+now("March 15 2PM") -> March 15 this year at 2:00 PM
+now("March 15 2022") -> March 15, 2022
+Any number of the following may be appended to the statement:
 
 Relative Date Shifts:
 
-Format: "plus <number> <unit>", "minus <number> <unit>"
-Units: hours, minutes, days, weeks, months, quarters, years (singular forms are also supported)
-Examples:
-"plus 3 days" shifts the current date forward by 3 days.
-"minus 2.5 weeks" shifts the current date back by 2.5 weeks.
-Specific Date and Time:
-
-Format: "<Month> <Day> [<Time>]", "<Month> <Day> <Year> [<Time>]"
-Examples:
-"March 15" refers to March 15 of the current year.
-"March 15 2PM" refers to March 15 of the current year at 2:00 PM.
-"March 15 2022" refers to March 15, 2022.
-"March 15 2022 2PM" refers to March 15, 2022, at 2:00 PM.
+now("plus 3 days") -> 3 days from today
+now("minus 2 weeks") -> 2 weeks ago
 Relative Time Adjustments:
 
-Format: "<unit> start", "<unit> end"
-Units: hours, minutes, days, weeks, months, quarters, years (singular forms are also supported)
-Examples:
-"month start" refers to the beginning of the current month.
-"year end" refers to the end of the current year.
+now("month start") -> Beginning of the current month
+now("year end") -> End of the current year
 Day of the Week Adjustments:
 
-Format: "previous <day>", "following <day>", "<day>"
-Days: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-Examples:
-"previous Tuesday" refers to the most recent Tuesday before today.
-"following Friday" refers to the next Friday after today.
-"Wednesday" refers to the upcoming Wednesday.
+now("previous Tuesday") -> Most recent Tuesday
+now("following Friday") -> Next Friday
+now("Wednesday") -> Upcoming Wednesday
 Combining Adjustments:
 
-Adjustments can be combined to create complex date and time ranges.
-Examples:
-"March 15 2PM plus 3 days end" refers to 2:00 PM on March 18.
-"April minus 1 year end" refers to the end of April in the previous year.
-"previous Tuesday following April minus 1 year at 5PM end" refers to 5:00 PM on the first Tuesday after April of the previous year.
+now("March 15 2PM plus 3 days end") -> 2:00 PM on March 18
+now("April minus 1 year end") -> End of April last year
 Explicit Date and Time:
 
-Format: "<Year> <Month> <Day> [<Time>]"
-Examples:
-"2022 March 15" refers to March 15, 2022.
-"2022 March 15 2PM" refers to March 15, 2022, at 2:00 PM.
-Examples for LLM Usage:
+now("2022 March 15") -> March 15, 2022
+now("2022 March 15 2PM") -> March 15, 2022 at 2:00 PM
 
-Basic Date and Time Range:
+Instructions:
+the statement can only contain words seen in examples, plus month names, week names, plus timespans such as minute, hour, day, week, month, year and quarter.
+Any thing else should be constructed from the above examples. since the word 'noon' is not in the example, you would need to use 12PM, and if the user asked for the 3rd quarter, you would have to go to the beginning of the year and then add adjustments.
 
-Input: "last week"
-Output: search(after="2023-03-01T00:00:00", before="2023-03-07T23:59:59", text="...")
-Specific Date and Time:
-
-Input: "March 15 2PM"
-Output: search(after="2023-03-15T14:00:00", before="2023-03-15T14:00:00", text="...")
-Specific Date with Year:
-
-Input: "March 15 2022"
-Output: search(after="2022-03-15T00:00:00", before="2022-03-15T23:59:59", text="...")
-Specific Date and Time with Year:
-
-Input: "March 15 2022 2PM"
-Output: search(after="2022-03-15T14:00:00", before="2022-03-15T14:00:00", text="...")
-Relative Time Shifts:
-
-Input: "plus 3 days"
-Output: search(after="2023-03-17T00:00:00", before="2023-03-17T23:59:59", text="...")
-Complex Date Range:
-
-Input: "March 15 2PM plus 3 days end"
-Output: search(after="2023-03-15T14:00:00", before="2023-03-18T23:59:59", text="...")
-Day of the Week Adjustments:
-
-Input: "previous Tuesday"
-Output: search(after="2023-03-07T00:00:00", before="2023-03-07T23:59:59", text="...")
-Instructions for LLM:
-
-Interpret the provided natural language date and time instruction using the rules and examples given.
-Generate the appropriate Python code for the search function, filling in the after and before parameters with the parsed date and time values, and the text parameter with the user's specified search text.
-By following these guidelines, the "now" function will accurately convert natural language date and time instructions into the required Python code for date range and text-based searches.
-The return value of a search function is a list of objects.   
+# Return Value:
+The return value of a search function is a list of objects:
 [{'email': raw_email, 'distance': 3.14}]
+
 where the larger the distance, the less relevant the result is.
 
-here is an example of raw_email:
-```
+# here is an example of raw_email:
+```json
 {
     "@odata.etag": "W/\"CQAAABYAAACBmGpda7ZqQJPfMOpiyn6aAAAERfnB\"",
     "id": "AAMkAGNjYjZlNmUxLWIzNGYtNDc3Ni04YTI3LTcwODFjOGZkMzkwMABGAAAAAABxT_rxjLfGQoiJhM1u-etjBwBlLqkxdm26QJmVjZdJ5nCIAAAAfGyrAAAodlP4a6HZQo2G3v6Cd4flAAAEO0PbAAA=",
@@ -185,31 +148,32 @@ here is an example of raw_email:
         "flagStatus": "notFlagged"
     }
 }
-```json
+```
 
 This is the past history of requests and results (or blank for first queries)
-```
-HISTORY
 ```json
+HISTORY
+```
 
 This is the query the user has asked for
-```
-QUERY
 ```text
+QUERY
+```
 
-You can do more than one search. but you should return a single value with the union operator.   for example by:
+# You can do more than one search. but you should return a single value with the union operator.   for example by:
 a= search_email('first')
 b= search_email('second')
 return a | b
 
-if the past history is adequate to answer the query, provide prose for the user that answer his question, for example
+# if the past history is adequate to answer the query, provide prose for the user that answer his question, for example
 
 if the user asked you to summarize all the emails from da ku yesterday, you would list the emails and titles and provide a brief summary of each, including the subject and up to three of the people attending.
 
 If you are NOT writing code, start your response with a single line: 
 RESPONSE.
 
-If you ARE writing code, do not include any prose, unless it is part of a comment
+# If you ARE writing code, **do not** include any prose or comments, and do not precede the code with ```python or end with ```
+
 
 
 

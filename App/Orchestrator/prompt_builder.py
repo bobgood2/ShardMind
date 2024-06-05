@@ -43,6 +43,10 @@ class PromptBuilder:
         return text
 
     def get(self, name, template_values):
+        # reload prompts every time for now for debugging
+        self.prompts = {}
+        self._scan_directory()
+        
         template_values = {key.lower(): value for key, value in template_values.items()}
         """Get the content of the specified prompt with template substitution."""
         lower_name = name.lower()
