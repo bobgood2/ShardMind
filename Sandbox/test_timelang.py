@@ -20,6 +20,11 @@ class TestDateParser(unittest.TestCase):
         self.assertEqual(result, expected)
     
     def test_specific_time(self):
+        result = get_timestamp_from_code("March 15 2024 2PM", current_time=self.current_time)
+        expected = datetime(2024, 3, 15, 14, 0, 0).isoformat()
+        self.assertEqual(result, expected)
+    
+    def test_specific_time(self):
         result = get_timestamp_from_code("March 15 2PM", current_time=self.current_time)
         expected = datetime(2023, 3, 15, 14, 0, 0).isoformat()
         self.assertEqual(result, expected)

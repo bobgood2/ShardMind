@@ -4,7 +4,7 @@ If you choose to write a program, it will be run in a true python interpreter, b
 
 Currently we have only implemented one function while we develop this capability:
 
-search_email(text='...', sender='...', fromWho='...', toRecipients='...', ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...', take=5)
+search_email(text='...', sender='...', fromWho='...', toRecipients='...', ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...', take=5, sort='newest', reverse=False)
 all function parameters are optional, 
 text is a natural language expression.
 all name related parameters can either be an exact match of the email address (i.e. 'bob@bing.com'), a complete display name (e.g. 'bob goodwin'), prefix letters from one-or-more words in the name (e.g. 'bo go'),  more than one name can be specified in the string if comma separated, and the comma is considered an or operator.
@@ -18,6 +18,9 @@ the final result set will be the intersection of the name constraints, the time 
 Do not do date and time calculations as part of your reasoning.  Instead use built in python functions to do date and time calculations.   If you are searching for emails last thursday, write a program that uses the now time stamp to figure out the date of last thursday and then the create the timestamp for midnight at the beginning and end of the day for before and after values.
 to do all date and time coding use the following now function that uses a natural language definition of date and time manipulation
 Prompt for LLM to Understand the "now" Function
+
+sort can be any field in the search, except before and after, for date searches, sort on 'newest'
+to sort in reverse, set reverse=True (for the oldest)
 
 # Title: Using the "now" Function for Date and Time Range Parsing
 
@@ -33,18 +36,28 @@ The "now" function translates natural language instructions into specific date a
 Capabilities:
 Phrases below can be combined into a single statement.
 
-Specific Date and Time:
-One or none of the following can start the statement. If none, the current time is used.
+## One or none of the following can start the statement. If none, the current time is used.
+Explicit Date and Time:
 
+now("March 15 2022") -> March 15, 2022
+now("March 15 2022 2PM") -> March 15, 2022 at 2:00 PM
+now("March 15 2022 2:15AM") -> March 15, 2022 at 2:15 AM
+now("March 15 2022 02:15") -> March 15, 2022 at 2:15 AM
 now("March 15") -> March 15 this year
 now("March 15 2PM") -> March 15 this year at 2:00 PM
-now("March 15 2022") -> March 15, 2022
-Any number of the following may be appended to the statement:
+
+## zero or more of the following may be appended to the statement:
 
 Relative Date Shifts:
 
 now("plus 3 days") -> 3 days from today
+now("plus 3 days end") -> 3 days from today end of day
 now("minus 2 weeks") -> 2 weeks ago
+now("plus 3 minutes") 
+now("plus 3 hours")
+now("plus 3 months")
+now("plus 3 quarters") 
+now("plus 3 years") 
 Relative Time Adjustments:
 
 now("month start") -> Beginning of the current month
@@ -54,18 +67,18 @@ Day of the Week Adjustments:
 now("previous Tuesday") -> Most recent Tuesday
 now("following Friday") -> Next Friday
 now("Wednesday") -> Upcoming Wednesday
-Combining Adjustments:
+
+## Combining Adjustments:
 
 now("March 15 2PM plus 3 days end") -> 2:00 PM on March 18
 now("April minus 1 year end") -> End of April last year
-Explicit Date and Time:
 
-now("2022 March 15") -> March 15, 2022
-now("2022 March 15 2PM") -> March 15, 2022 at 2:00 PM
-
-Instructions:
-the statement can only contain words seen in examples, plus month names, week names, plus timespans such as minute, hour, day, week, month, year and quarter.
-Any thing else should be constructed from the above examples. since the word 'noon' is not in the example, you would need to use 12PM, and if the user asked for the 3rd quarter, you would have to go to the beginning of the year and then add adjustments.
+## now() Instructions:
+the statement can only contain words seen in examples.
+All months and days of weeks may be used as in emamples
+Anything else should be constructed from the above examples. 
+since the word 'noon' is not in the examples, you would need to use 12PM
+if the user asked for the 3rd quarter, you would have to go to the beginning of the year and then add adjustments.
 
 # Return Value:
 The return value of a search function is a list of objects:

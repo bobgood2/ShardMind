@@ -1,5 +1,6 @@
 from Orchestrator import app_logging as logging, prompt_builder
 import uuid
+import traceback
 from Orchestrator.llm_client import LLMClient
 from Orchestrator.prompt_builder import PromptBuilder
 from Orchestrator.plan_runner import PlanRunner
@@ -22,10 +23,10 @@ class Request:
            })
 
 
-    async def llmCall(self):
+    async def llmCall(self, promptName, history):
         start_time= datetime.now()
         start_stamp=logging.thenstamp(start_time)
-        prompt = promptBuilder.get('reason', {'QUERY':self.user_query, 'HISTORY':''})
+        prompt = promptBuilder.get(promptName, {'QUERY':self.user_query, 'HISTORY':history})
         model = 'dev-gpt-4o-2024-05-13-chat-completions'
         request_data = {
           "messages":[
@@ -39,20 +40,6 @@ class Request:
         rid = str(uuid.uuid4())
         print("LLMSEND")
         response = await llmClient.send_request(model, request_data, rid)
-#        {'id': 'chatcmpl-9V7DFJ2NqQyDod9I6KLUHmR8kCBav', 
-#        'object': 'chat.completion', 
-#        'created': 1717202921, 
-#        'model': 'gpt-4o-2024-05-13', 
-#        'choices': [
-#          {'index': 0, 
-#          'message': 
-#          {'role': 'assistant', 'content': 'RESPONSE.\n\nHello! How can I assist you with Microsoft 365 today?'}, 
-#          'logprobs': None, 'finish_reason': 'stop'}
-#        ], 
-#        'usage': {'prompt_tokens': 2050, 
-#        'completion_tokens': 16, 
-#        'total_tokens': 2066}, 
-#        'system_fingerprint': 'fp_5f4bad809a'}
         result = response['choices'][0]['message']['content']        
         print("LLMRESPONSE")
         end_time=datetime.now()
@@ -62,19 +49,44 @@ class Request:
              'title': 'LLM',
              'timestamp': start_stamp,
              'duration': elapsed_time,
+             'promptName': promptName,
              'prompt': prompt,
              'model': response['model'],
-             'prompt_tokens' f"{response['usage']['prompt_tokens']}"
-             'completion_tokens' f"{response['usage']['completion_tokens']}"
+             'prompt_tokens': f"{response['usage']['prompt_tokens']}",
+             'completion_tokens': f"{response['usage']['completion_tokens']}",
              'output': result
              })
         return result
         
     async def process(self) -> str:
-
-        # You can modify this method to process the user_query as needed
-        result = await self.llmCall()
-        print("starting plan: "+result)
-        program = await planRunner.Run(result, self.guid)
-        return program.final
+        try:
+            history=[]
+            promptName='reason'
+            iteration=0
+            while iteration<3:
+                iteration+=1
+                # You can modify this method to process the user_query as needed
+                result = await self.llmCall(promptName, str(history))
+                print("starting plan: "+result)
+                if result.startswith("RESPONSE"):
+                    print("RESPONSE")
+                    text = '\n'.join(result.split('\n')[1:])
+                    return text
+                if promptName=='synthesis':
+                    return result;
+                program = await planRunner.Run(result, self.guid)
+                history.append({'plan':str(result), 'result':program.final})
+                promptName='synthesis'
+            return program.final
+        except Exception as e:
+            stack_trace = traceback.format_exc()
+            print(f"Exception {str(e)}")
+            print(stack_trace)
+            logging.log(
+                {'guid': self.guid,
+                 'title': 'exception',
+                 'message': str(e),
+                 'stack trace': stack_trace
+                 })
+            
 

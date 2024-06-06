@@ -1,5 +1,7 @@
 import sys
 import os
+
+from pytrie import NULL
 sys.path.append(os.getcwd())
 
 import dis
@@ -107,32 +109,56 @@ def get_raw_emails(idx):
 def euclidean_distance(a, b):
     return np.linalg.norm(a - b)
 
-def short_search(query_embedding, union_set, take):
+def sort_distances(distances, sort_value, reverse_value, take):
+    if sort_value=="newest":
+        if reverse_value:
+            distances.sort(key=lambda x: -x[1])
+        else:
+            distances.sort(key=lambda x: x[1])
+        print("resorted for received")
+        print(distances)
+        print()
+    else:
+        distances.sort(key=lambda x: x[0])
+
+    if len(distances)>take:
+        distances=distances[:take]
+    return distances
+
+def time_search(take, sort_value, reverse_value):
+    distances=[(idx, idx) for idx in range(take)]
+    if sort_value=='newest' and reverse_value:
+        last = len(when_search.data)-1
+        distances=[(idx, last-idx) for idx in range(take)]
+        
+    return distances
+
+    
+def short_search(query_embedding, union_set, take, sort_value, reverse_value):
     distances=[]
     for index in union_set:
         embedding = read_embedding(index)
         dist = euclidean_distance(query_embedding, embedding)
         distances.append((dist, index))
         
-    distances.sort(key=lambda x: x[0])
-    if len(distances)>take:
-        distances=distances[:take]
+    distances = sort_distances(distances, sort_value, reverse_value, take)
     return distances
 
-def post_filter_search(query_embedding, union_set, take):
+def post_filter_search(query_embedding, union_set, take, sort_value, reverse_value):
     fdistances, findices = index.search(query_embedding, take*k_take_multiplier)
-    filtered = [(float(dist), int(idx)) for idx, dist in zip(findices[0], fdistances[0])]
+    distances = [(float(dist), int(idx)) for idx, dist in zip(findices[0], fdistances[0])]
 
-    filtered.sort(key=lambda x: x[0])
-    if len(filtered)>take:
-        filtered=filtered[:take]
-    return filtered
+    distances = sort_distances(distances, sort_value, reverse_value, take)
+    return distances
    
 @app.route('/search_email', methods=['POST'])
 def search():
     print(f"start {nowstamp()}")
     try:
+        # add sort and reverse
         query = request.json
+        sort_value = query.get('sort', None)  
+        reverse_value = query.get('reverse', False)    
         print(query)
         print(f"who search {nowstamp()}")
         posting_lists_names, backup_text = who_search.request(query)
@@ -173,32 +199,39 @@ def search():
         model.to(device)
 
         # Encode the query text on GPU
-        query_embedding = model.encode([query_text], convert_to_tensor=True).to('cpu').numpy().reshape(1, -1)
+        query_embedding = None
+        if query_text!='':
+            model.encode([query_text], convert_to_tensor=True).to('cpu').numpy().reshape(1, -1)
         
         # Check if the query embedding has the correct dimension
-        if query_embedding.shape[1] != embedding_dim:
+        if query_embedding and query_embedding.shape[1] != embedding_dim:
             return jsonify({'error': f'Invalid embedding dimension. Expected {embedding_dim}, got {query_embedding.shape[1]}'})
         
         # Number of nearest neighbors to search for
         take = int(request.json.get('take', 5))
         
         print(f"search start {nowstamp()}")
-        if (len(union_set)<k_group or max(union_set)<k_recent):
+        if not query_embedding:
+            # go through one by one and calculate
+            print(f"no text scenario: {len(union_set)}")
+            distances = time_search(take, sort_value, reverse_value)
+            pass 
+        elif (len(union_set)<k_group or max(union_set)<k_recent):
             # go through one by one and calculate
             print(f"small scenario: {len(union_set)}")
-            distances = short_search(query_embedding, union_set, take)
+            distances = short_search(query_embedding, union_set, take, sort_value, reverse_value)
             pass 
         elif not union_set:
             print(f"normal scenario: {len(union_set)}")
-            # do a normal search5z
+            # do a normal search
             fdistances, findices = index.search(query_embedding, take)
             distances = [(float(dist), int(idx)) for idx, dist in zip(findices[0], fdistances[0])]
-            distances.sort(key=lambda x: x[0])
+            distances=sort_distances(distances,sort_value, reverse_value, take)
         else:
             print(f"mixed scenario: {len(union_set)}")
             # do a broader search and then post-filter  ughhh5
             # maybe we can have a shorter index built for the last few months or so...
-            distances = post_filter_search(query_embedding, union_set, take)
+            distances = post_filter_search(query_embedding, union_set, take, sort_value, reverse_value)
             pass
 
         print(f"prepare response {nowstamp()}")

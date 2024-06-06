@@ -36,10 +36,11 @@ send_log_message(guid, 'query', query_text)
 
 # Request payload
 payload = {
-    "text": query_text,
-    "after": "2024-05-01T12:00:00Z",
-    "from": "joh",
-    "take": 5
+    #"text": query_text,
+    #"after": "2024-05-01T12:00:00Z",
+    #"from": "joh",
+    "take": 1,
+    "sort": 'newest'
 }
 
 # Set headers

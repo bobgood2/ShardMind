@@ -12,8 +12,14 @@ class WhenSeach():
             self.data=[self.timestamp(item) for item in json_data]
 
     def timestamp(self, date_string):
-        return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%SZ")
-    
+        try:
+            return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")    
+        except:
+            try:
+                return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%SZ")    
+            except:
+                print(f"could not parse date string {date_string}")
+            
     def reverse_bisect_left(self, a, x, lo=0, hi=None):
         if hi is None:
             hi = len(a)
