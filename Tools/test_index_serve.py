@@ -36,13 +36,13 @@ send_log_message(guid, 'query', query_text)
 
 # Request payload
 payload = {
-    #"text": query_text,
-    #"after": "2024-05-01T12:00:00Z",
-    #"from": "joh",
-    "take": 1,
+    "text": query_text,
+    "after": "2024-05-20T07:00:00Z",
+    "before": "2024-05-27T06:59:59.999999Z",
+    "from": "joh",
+    "take": 5,
     "sort": 'newest'
 }
-
 # Set headers
 headers = {
     "Content-Type": "application/json"

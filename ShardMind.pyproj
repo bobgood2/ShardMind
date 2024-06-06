@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Services\IndexServe\index_serve.py</StartupFile>
+    <StartupFile>Tools\test_index_serve.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

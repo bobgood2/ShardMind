@@ -136,10 +136,14 @@ def time_search(take, sort_value, reverse_value):
     
 def short_search(query_embedding, union_set, take, sort_value, reverse_value):
     distances=[]
-    for index in union_set:
-        embedding = read_embedding(index)
-        dist = euclidean_distance(query_embedding, embedding)
-        distances.append((dist, index))
+    if query_embedding:
+        for index in union_set:
+            embedding = read_embedding(index)
+            dist = euclidean_distance(query_embedding, embedding)
+            distances.append((dist, index))
+    else:
+        for index in union_set:
+            distances.append((index, index))
         
     distances = sort_distances(distances, sort_value, reverse_value, take)
     return distances
@@ -211,15 +215,15 @@ def search():
         take = int(request.json.get('take', 5))
         
         print(f"search start {nowstamp()}")
-        if not query_embedding:
-            # go through one by one and calculate
-            print(f"no text scenario: {len(union_set)}")
-            distances = time_search(take, sort_value, reverse_value)
-            pass 
-        elif (len(union_set)<k_group or max(union_set)<k_recent):
+        if (len(union_set)<k_group or max(union_set)<k_recent):
             # go through one by one and calculate
             print(f"small scenario: {len(union_set)}")
             distances = short_search(query_embedding, union_set, take, sort_value, reverse_value)
+            pass 
+        elif not query_embedding:
+            # go through one by one and calculate
+            print(f"no text scenario: {len(union_set)}")
+            distances = time_search(take, sort_value, reverse_value)
             pass 
         elif not union_set:
             print(f"normal scenario: {len(union_set)}")

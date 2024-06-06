@@ -57,7 +57,6 @@ class MyConversation(language_client.Conversation):
     @language_client.managed_function
     def search_email(self, text=None, sender=None, fromWho=None, toRecipients=None, ccRecipients=None, bccRecipients=None, replyTo=None, after=None, before=None, take=None, sort=None, reverse=None):
         try:
-            print("search email")
             email_params = {
                 'text': text,
                 'sender': sender,
@@ -72,7 +71,6 @@ class MyConversation(language_client.Conversation):
                 'sort': sort,
                 'reverse': reverse
             }
-            print("search email2")
 
             # Filter out None values
             filtered_params = {k: v for k, v in email_params.items() if v is not None}
@@ -84,15 +82,11 @@ class MyConversation(language_client.Conversation):
             start_time= datetime.now()
             start_stamp=logging.thenstamp(start_time)
 
-            print("search email3")
             response = requests.post(url, headers=headers, data=json.dumps(filtered_params))
 
-            print("search email4")
             end_time=datetime.now()
             elapsed_time = (end_time - start_time).total_seconds()
-            print("search email5")
             result = response.json()
-            print("search email6")
             logging.log(
                 {'guid': self.guid,
                  'title': 'search_email',
@@ -101,7 +95,6 @@ class MyConversation(language_client.Conversation):
                  'parameters': str(filtered_params),
                  'output': result
                  })
-            print("search email7")
 
             self.final=result
             return result
@@ -118,8 +111,6 @@ class MyConversation(language_client.Conversation):
                  'parameters': str(filtered_params),
                  'exception': f"{e} -- {stack_trace}"
                  })
-            print("logged")
-
      
     @language_client.managed_function
     def search_teams(self, a=0, b=0, c=0):
