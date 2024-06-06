@@ -55,7 +55,7 @@ class MyConversation(language_client.Conversation):
              })
     
     @language_client.managed_function
-    def search_email(self, text=None, sender=None, fromWho=None, toRecipients=None, ccRecipients=None, bccRecipients=None, replyTo=None, after=None, before=None, take=None, sort=None, reverse=None):
+    def search_email(self, text=None, sender=None, fromWho=None, toRecipients=None, ccRecipients=None, bccRecipients=None, replyTo=None, after=None, before=None, take=None, sort=None, reverse=None, isRead=None, isDraft=None, hasAttachments=None):
         try:
             email_params = {
                 'text': text,
@@ -69,7 +69,10 @@ class MyConversation(language_client.Conversation):
                 'before': before,
                 'take': take,
                 'sort': sort,
-                'reverse': reverse
+                'reverse': reverse,
+                'isRead': isRead,
+                'isDraft': isRead,
+                'hasAttachments': isRead,
             }
 
             # Filter out None values

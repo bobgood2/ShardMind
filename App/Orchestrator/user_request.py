@@ -38,10 +38,8 @@ class Request:
           "max_tokens": 800
         }
         rid = str(uuid.uuid4())
-        print("LLMSEND")
         response = await llmClient.send_request(model, request_data, rid)
         result = response['choices'][0]['message']['content']        
-        print("LLMRESPONSE")
         end_time=datetime.now()
         elapsed_time = (end_time - start_time).total_seconds()
         logging.log(

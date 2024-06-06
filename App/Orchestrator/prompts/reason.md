@@ -4,7 +4,7 @@ If you choose to write a program, it will be run in a true python interpreter, b
 
 Currently we have only implemented one function while we develop this capability:
 
-search_email(text='...', sender='...', fromWho='...', toRecipients='...', ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...', take=5, sort='newest', reverse=False)
+search_email(text='...', sender='...', fromWho='...', toRecipients='...', ccRecipients='...', bccRecipients='...', replyTo='...', after='...', before='...', take=5, sort='newest', reverse=False, isRead=False, isDraft=False, hasAttachments=False)
 all function parameters are optional, 
 text is a natural language expression.
 all name related parameters can either be an exact match of the email address (i.e. 'bob@bing.com'), a complete display name (e.g. 'bob goodwin'), prefix letters from one-or-more words in the name (e.g. 'bo go'),  more than one name can be specified in the string if comma separated, and the comma is considered an or operator.
