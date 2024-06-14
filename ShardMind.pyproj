@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3f9b5603-0436-45fd-9b7e-404ef63f8483</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Tools\test_index_serve.py</StartupFile>
+    <StartupFile>Build\Calendar\build_calendar.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -47,6 +47,8 @@
     <Folder Include="App\" />
     <Folder Include="App\Orchestrator\" />
     <Folder Include="App\Orchestrator\prompts\" />
+    <Folder Include="Build\Calendar\" />
+    <Folder Include="Build\parquet\" />
     <Folder Include="Scripts\" />
     <Folder Include="Services\DebuggingServer\templates\" />
     <Folder Include="Services\IndexServe\Search\" />
@@ -71,8 +73,13 @@
     <Compile Include="App\Orchestrator\user_request.py" />
     <Compile Include="App\Orchestrator\__init__.py" />
     <Compile Include="App\__init__.py" />
+    <Compile Include="Build\Calendar\build_calendar.py" />
+    <Compile Include="Build\Calendar\create_calendar_people_index.py" />
+    <Compile Include="Build\Calendar\create_calendar_index.py" />
+    <Compile Include="Build\Calendar\create__calendar_posting_lists.py" />
     <Compile Include="Build\Email\build.py" />
     <Compile Include="Build\Email\clean.py" />
+    <Compile Include="Build\parquet\read_parquet.py" />
     <Compile Include="Morgue\copy_embeddings.py" />
     <Compile Include="Build\Email\create_index.py" />
     <Compile Include="Build\Email\create_people_index.py" />
@@ -93,6 +100,7 @@
     <Compile Include="Scripts\__init__.py" />
     <Compile Include="Services\DebuggingServer\__init__.py" />
     <Compile Include="Services\IndexServe\index_serve.py" />
+    <Compile Include="Services\IndexServe\Search\azureml_embeddings.py" />
     <Compile Include="Services\IndexServe\Search\when_search.py" />
     <Compile Include="Services\IndexServe\Search\who_search.py" />
     <Compile Include="Services\PlanServer\plan_server.py" />
@@ -122,10 +130,13 @@
     <Content Include="Scripts\debug_server.bat" />
     <Content Include="Scripts\freeze.bat" />
     <Content Include="Scripts\index_serve.bat" />
+    <Content Include="Scripts\install.bat" />
     <Content Include="Scripts\look.bat" />
     <Content Include="Scripts\plan_server.bat" />
     <Content Include="Scripts\README.md" />
     <Content Include="Scripts\scrape.bat" />
+    <Content Include="Scripts\restart.bat" />
+    <Content Include="Scripts\run_service.bat" />
     <Content Include="Scripts\test_debug_server.bat" />
     <Content Include="Services\DebuggingServer\templates\index.html" />
   </ItemGroup>

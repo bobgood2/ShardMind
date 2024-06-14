@@ -9,24 +9,38 @@ if root != 'index':
     print (f"**** {root} <==  root directory changed ***")
     print (f"**** {root} <==  root directory changed ***")
     
-EMAILS_RAW_DIR = f'C:\{root}\email\emails'
-EMAILS_MAPPING_FILE = f'c:\{root}\email\index_mappings.json'
-EMAILS_INDEXED_EMBEDDINGS_DIR = f'c:\{root}\email\indexed_embeddings'
-EMAILS_EMBEDDINGS_DIR = f'c:\{root}\email\embeddings'
-EMAILS_INDEX_FILE = f'c:\{root}\email\index.faiss'
-EMAILS_POSTING_LIST_DIR = f'c:\{root}\email\posting_lists'
-EMAILS_WHO_FILE = f'c:\{root}\email\who.json'
-EMAILS_METADATA_DIR = f'c:\{root}\email\metadata'
-EMAILS_WHEN_FILE = f'c:\{root}\email\when.json'
-EMAILS_CHECKPOINT_FILE = f'c:\{root}\email\checkpoint.txt'
+EMAILS_RAW_DIR = f'C:\\{root}\\email\\emails'
+EMAILS_RAW_DIR2 = f'C:\\{root}\\email\\emails2'  
+FILES_RAW_DIR = f'C:\\{root}\\file\\files'
+CHATS_RAW_DIR = f'C:\\{root}\\chat\\chats'
+CALENDAR_RAW_DIR = f'C:\\{root}\\calendar\\calendar'
+PEOPLE_RAW_DIR = f'C:\\{root}\\people\\people'
+PARQUET_DIR = f'C:\\{root}\\raw'
+EMAILS_MAPPING_FILE = f'C:\\{root}\\email\\index_mappings.json'
+EMAILS_INDEXED_EMBEDDINGS_DIR = f'C:\\{root}\\email\\indexed_embeddings'
+EMAILS_EMBEDDINGS_DIR = f'C:\\{root}\\email\\embeddings'
+CALENDAR_EMBEDDINGS_DIR = f'C:\\{root}\\calendar\\embeddings'
+EMAILS_INDEX_FILE = f'C:\\{root}\\email\\index.faiss'
+EMAILS_POSTING_LIST_DIR = f'C:\\{root}\\email\\posting_lists'
+EMAILS_WHO_FILE = f'C:\\{root}\\email\\who.json'
+EMAILS_METADATA_DIR = f'C:\\{root}\\email\\metadata'
+EMAILS_WHEN_FILE = f'C:\\{root}\\email\\when.json'
+EMAILS_CHECKPOINT_FILE = f'C:\\{root}\\email\\checkpoint.txt'
 
 
 directories = [
     EMAILS_RAW_DIR,
+    EMAILS_RAW_DIR2,
+    FILES_RAW_DIR,
+    CHATS_RAW_DIR,
+    CALENDAR_RAW_DIR,
+    PEOPLE_RAW_DIR,
     EMAILS_INDEXED_EMBEDDINGS_DIR,
     EMAILS_EMBEDDINGS_DIR,
+    CALENDAR_EMBEDDINGS_DIR,
     EMAILS_POSTING_LIST_DIR,
     EMAILS_METADATA_DIR,
+    PARQUET_DIR,
 ]
 
 # Function to create directories if they do not exist
@@ -46,12 +60,6 @@ def change_dir_and_ext(file_path, new_dir, new_ext):
     base_name, _ = os.path.splitext(file_name)
     return os.path.join(new_dir, base_name + new_ext)
    
-def embeddings_path(file_path):
-    return change_dir_and_ext(file_path,EMAILS_EMBEDDINGS_DIR, '.npy') 
-
-def metadata_path(file_path):
-    return change_dir_and_ext(file_path,EMAILS_METADATA_DIR, '.json') 
-
 
 # Ensure all directories exist
 ensure_directories_exist(directories)

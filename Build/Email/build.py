@@ -161,7 +161,16 @@ weights = {
     'bodyContent': 1
 }
 
+
+def embeddings_path(file_path):
+    return config.change_dir_and_ext(file_path,config.EMAILS_EMBEDDINGS_DIR, '.npy') 
+
+def metadata_path(file_path):
+    return config.change_dir_and_ext(file_path,config.EMAILS_METADATA_DIR, '.json') 
+
+
+
 for (path, embedding) in preprocess_emails_from_directory():
-    epath = config.embeddings_path(path)
+    epath = embeddings_path(path)
     np.save(epath, embedding)
     
