@@ -125,11 +125,22 @@ def sort_distances(distances, sort_value, reverse_value, take):
         distances=distances[:take]
     return distances
 
-def time_search(take, sort_value, reverse_value):
-    distances=[(idx, idx) for idx in range(take)]
-    if sort_value=='newest' and reverse_value:
-        last = len(when_search.data)-1
-        distances=[(idx, last-idx) for idx in range(take)]
+def time_search(union_set, take, sort_value, reverse_value):
+    if union_set:
+        distances=[(idx, idx) for idx in list(union_set)]
+        if sort_value=='newest' and reverse_value:
+            last = len(when_search.data)-1
+            distances=[(idx, last-idx) for idx in list(union_set)]
+        distances.sort(key=lambda x: x[0])
+
+        if len(distances)>take:
+            distances=distances[:take]
+        
+    else:
+        distances=[(idx, idx) for idx in range(take)]
+        if sort_value=='newest' and reverse_value:
+            last = len(when_search.data)-1
+            distances=[(idx, last-idx) for idx in range(take)]
         
     return distances
 
@@ -194,8 +205,8 @@ def search():
 
         # Get the query string from the JSON data
         query_text = query.get('text', '')        
-        if len(query_text)==0:
-            query_text = backup_text
+ #       if len(query_text)==0:
+ #           query_text = backup_text
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f'Using device: {device}')
 
@@ -223,7 +234,7 @@ def search():
         elif not query_embedding:
             # go through one by one and calculate
             print(f"no text scenario: {len(union_set)}")
-            distances = time_search(take, sort_value, reverse_value)
+            distances = time_search(union_set, take, sort_value, reverse_value)
             pass 
         elif not union_set:
             print(f"normal scenario: {len(union_set)}")
@@ -259,4 +270,4 @@ def search():
 
 if __name__ == '__main__':
     print("starting server")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001, use_reloader=False)
